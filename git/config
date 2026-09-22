@@ -1,0 +1,45 @@
+[diff]
+    external = difft
+[user]
+	email = arvlas78@gmail.com
+	name = Artem
+[safe]
+	directory = /opt/tuxclocker
+[alias]
+	nb = !git checkout main && git pull && git checkout -b
+	stat = status
+	s = status
+	co = checkout
+	br = branch
+	ll = log --oneline --graph --decorate
+	la = log --oneline --all
+	d  = diff
+	ds = diff --staged
+	a  = add
+	aa = add --all
+	cm = commit -m
+	ca = commit --amend
+	can = commit --amend --no-edit
+	ps = push
+	pl = pull
+	rb = rebase
+	rbi = rebase -i
+	rbc = rebase --continue
+	rba = rebase --abort
+	rs = restore
+	rss = restore --staged
+	sl = stash list
+	sp = stash pop
+	sa = stash apply
+	sub = submodule update --init --recursive
+	aliases = config --l | grep alias
+	dv = !nvim -c DiffviewOpen
+
+[init]
+	defaultBranch = main
+[push]
+	autoSetupRemote = true
+[diff]
+	tool = goland
+[difftool "goland"]
+	cmd = goland diff \"$LOCAL\" \"$REMOTE\"
