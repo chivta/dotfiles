@@ -21,7 +21,11 @@ vim.pack.add({
     "https://github.com/nvim-telescope/telescope.nvim",
     "https://github.com/rose-pine/neovim",
     "https://github.com/lewis6991/gitsigns.nvim",
-    "https://github.com/sindrets/diffview.nvim",
+    -- Maintained fork of sindrets/diffview.nvim (renamed diffview-plus.nvim),
+    -- same `diffview` Lua module.
+    "https://github.com/dlyongemallo/diffview-plus.nvim",
+    -- Default branch is master; the repo has no main branch.
+    "https://github.com/NeogitOrg/neogit",
     "https://github.com/folke/which-key.nvim",
     "https://github.com/neovim/nvim-lspconfig",
     "https://github.com/mason-org/mason.nvim",
