@@ -43,6 +43,11 @@ vim.pack.add({
     "https://github.com/nvim-neotest/nvim-nio",
     "https://github.com/nvim-neotest/neotest",
     { src = "https://github.com/fredrikaverpil/neotest-golang", version = vim.version.range("2.*") },
+    "https://github.com/olimorris/codecompanion.nvim",
+    "https://github.com/MunifTanjim/nui.nvim",
+    "https://github.com/m4xshen/hardtime.nvim",
+    "https://github.com/tris203/precognition.nvim",
+    "https://github.com/ThePrimeagen/vim-be-good",
 })
 
 
