@@ -12,6 +12,11 @@ vim.pack.add({
     "https://github.com/folke/which-key.nvim",
     "https://github.com/neovim/nvim-lspconfig",
     "https://github.com/mason-org/mason.nvim",
+    -- A release tag lets blink download its prebuilt Rust fuzzy matcher.
+    { src = "https://github.com/saghen/blink.cmp", version = vim.version.range("1.*") },
+    "https://github.com/stevearc/conform.nvim",
+    "https://github.com/mfussenegger/nvim-lint",
+    { src = "https://github.com/nvim-treesitter/nvim-treesitter-textobjects", version = "main" },
 })
 
 
