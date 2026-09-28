@@ -1,4 +1,17 @@
 require("config")
+
+-- fff ships a native binary: fetch (or build) it whenever vim.pack installs or
+-- updates the plugin. Defined before vim.pack.add so the first install runs it.
+vim.api.nvim_create_autocmd("PackChanged", {
+  callback = function(ev)
+    local name, kind = ev.data.spec.name, ev.data.kind
+    if name == "fff" and (kind == "install" or kind == "update") then
+      if not ev.data.active then vim.cmd.packadd("fff") end
+      require("fff.download").download_or_build_binary()
+    end
+  end,
+})
+
 vim.pack.add({
     "https://github.com/OXY2DEV/markview.nvim",
     -- master is archived and breaks on nvim 0.12 (query directives use the
@@ -17,6 +30,9 @@ vim.pack.add({
     "https://github.com/stevearc/conform.nvim",
     "https://github.com/mfussenegger/nvim-lint",
     { src = "https://github.com/nvim-treesitter/nvim-treesitter-textobjects", version = "main" },
+    "https://github.com/dmtrKovalenko/fff",
+    { src = "https://github.com/ThePrimeagen/harpoon", version = "harpoon2" },
+    "https://github.com/stevearc/oil.nvim",
 })
 
 
