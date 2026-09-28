@@ -2,7 +2,10 @@
 -- motions (on by default), precognition shows motion hints in the gutter and
 -- buffer (hidden until toggled), vim-be-good is the :VimBeGood game.
 -- Keymaps: <leader>uH toggle hardtime, <leader>up toggle precognition.
-require("hardtime").setup()
+
+-- hardtime restricts <C-p> as a line motion by default, which would throttle
+-- the fff file picker bound to it.
+require("hardtime").setup({ restricted_keys = { ["<C-P>"] = false } })
 require("precognition").setup({ startVisible = false })
 
 vim.keymap.set("n", "<leader>uH", "<cmd>Hardtime toggle<cr>", { desc = "Toggle hardtime" })
