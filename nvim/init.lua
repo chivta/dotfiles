@@ -33,6 +33,12 @@ vim.pack.add({
     "https://github.com/dmtrKovalenko/fff",
     { src = "https://github.com/ThePrimeagen/harpoon", version = "harpoon2" },
     "https://github.com/stevearc/oil.nvim",
+    "https://github.com/mfussenegger/nvim-dap",
+    "https://github.com/leoluz/nvim-dap-go",
+    { src = "https://github.com/igorlfs/nvim-dap-view", version = vim.version.range("1.*") },
+    "https://github.com/nvim-neotest/nvim-nio",
+    "https://github.com/nvim-neotest/neotest",
+    { src = "https://github.com/fredrikaverpil/neotest-golang", version = vim.version.range("2.*") },
 })
 
 

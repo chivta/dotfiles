@@ -10,6 +10,7 @@ local TOOLS = {
   "vtsls",
   "lua-language-server",
   "delve",
+  "gotestsum",
   "gofumpt",
   "goimports",
   "prettier",
