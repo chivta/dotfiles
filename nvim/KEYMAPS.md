@@ -18,7 +18,8 @@ These keys do something different from what `:Tutor`, vim-be-good or any Vim tut
 | `<C-p>` | n | line up | find files (fff) | `after/plugin/fff.lua` |
 | `<C-e>` | n | scroll down one line | harpoon menu | `after/plugin/harpoon.lua` |
 | `-` | n | line up, first non-blank | open parent directory (oil) | `after/plugin/oil.lua` |
-| `hjkl` repeats, arrows | n | move | blocked by hardtime after a few presses | `after/plugin/trainers.lua` |
+| `hjkl` repeats | n | move | blocked by hardtime after a few presses | `after/plugin/trainers.lua` |
+| arrow keys | n, x, o, i | move | disabled by hardtime (mouse and trackpad scrolling still work) | `after/plugin/trainers.lua` |
 
 Consequences of the delete change: `ddp` no longer swaps lines and `xp` no longer swaps characters. Move text with `<leader>xx` then `p`. In visual mode `p` replaces the selection and copies the replaced text, while `P` keeps the clipboard.
 

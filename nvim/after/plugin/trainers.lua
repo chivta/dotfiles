@@ -5,7 +5,12 @@
 
 -- hardtime restricts <C-p> as a line motion by default, which would throttle
 -- the fff file picker bound to it.
-require("hardtime").setup({ restricted_keys = { ["<C-P>"] = false } })
+-- disable_mouse = false keeps trackpad scrolling; arrow keys stay blocked by
+-- hardtime's default disabled_keys.
+require("hardtime").setup({
+  disable_mouse = false,
+  restricted_keys = { ["<C-P>"] = false },
+})
 require("precognition").setup({ startVisible = false })
 
 vim.keymap.set("n", "<leader>uH", "<cmd>Hardtime toggle<cr>", { desc = "Toggle hardtime" })
