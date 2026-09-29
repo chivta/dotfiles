@@ -17,6 +17,9 @@ opt.undofile = true
 opt.updatetime = UPDATE_TIME_MS
 opt.confirm = true
 
+-- Yank and put use the macOS clipboard. Deletes skip it (see remap.lua).
+opt.clipboard = "unnamedplus"
+
 opt.ignorecase = true
 opt.smartcase = true
 opt.inccommand = "split"

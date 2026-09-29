@@ -53,16 +53,4 @@ vim.pack.add({
 
 vim.keymap.set('v', '<Esc>[25;5~', '"+y', { noremap = true, silent = true })
 
-vim.opt.clipboard = ""   -- make sure nothing sets unnamedplus
-
-vim.api.nvim_create_autocmd("TextYankPost", {
-  group = vim.api.nvim_create_augroup("YankToClipboard", { clear = true }),
-  callback = function()
-    local ev = vim.v.event
-    if ev.operator == "y" and ev.regname == "" then
-      vim.fn.setreg("+", vim.fn.getreg('"'), vim.fn.getregtype('"'))
-    end
-  end,
-})
-
 vim.keymap.set("n", "<leader>o", "Go", { desc = "Append line at EOF and insert" })
