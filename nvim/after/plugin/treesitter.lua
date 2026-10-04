@@ -1,7 +1,12 @@
 -- nvim-treesitter main branch: no configs.setup(), no auto_install. Parsers are
 -- installed explicitly (needs the tree-sitter CLI + a C compiler) and
 -- highlighting is turned on per buffer with vim.treesitter.start().
-local parsers = { "c", "lua", "vim", "vimdoc", "query", "markdown", "markdown_inline", "go" }
+local parsers = {
+  "c", "lua", "vim", "vimdoc", "query", "markdown", "markdown_inline",
+  "go", "gomod", "gosum", "gowork",
+  "typescript", "tsx", "javascript", "json", "yaml", "html", "css",
+  "sql", "dockerfile", "bash",
+}
 
 require("nvim-treesitter").install(parsers)
 

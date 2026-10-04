@@ -3,3 +3,6 @@ karabiner/automatic_backups/
 
 # Per-machine git settings, see the [include] in git/config
 git/config.local
+
+.DS_Store
+zsh/.zcompdump
