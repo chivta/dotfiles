@@ -3,8 +3,6 @@
 [user]
 	email = arvlas78@gmail.com
 	name = Artem
-[safe]
-	directory = /opt/tuxclocker
 [alias]
 	nb = !git checkout main && git pull && git checkout -b
 	stat = status
@@ -39,7 +37,8 @@
 	defaultBranch = main
 [push]
 	autoSetupRemote = true
-[diff]
-	tool = goland
-[difftool "goland"]
-	cmd = goland diff \"$LOCAL\" \"$REMOTE\"
+
+# Per-machine settings (safe.directory, difftool, ...). Untracked; git skips
+# the include when the file is missing. Keep last so it overrides the above.
+[include]
+	path = config.local
