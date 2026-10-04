@@ -15,16 +15,8 @@ zle -N backward-kill-space-then-word
 bindkey '^W' backward-kill-space-then-word
 bindkey '^[^?' backward-kill-space-then-word
 # --- ALIASES ---
-alias cc='claude'
-alias dc='docker-compose'
-alias d='docker'
-alias g='git'
-alias nv='nvim'
-alias grep='grep --color=auto'
-alias sudp='sudo'
-alias bc='bc -q'
-alias ks='kubectl'
-alias k='kubectl'
+# Shared aliases, functions, git prompt and SSH tmux attach
+source "$HOME/.config/shell/rc.sh"
 
 # macOS ships BSD ls (no --color=auto); use GNU coreutils' gls if installed
 if command -v gls >/dev/null 2>&1; then
@@ -35,19 +27,7 @@ else
     alias ll='ls -laG'
 fi
 
-# Navigation & Safety
-alias ..='cd ..'
-alias ...='cd ../..'
-# alias cp='cp -iv'
-# alias mv='mv -iv'
-# alias rm='rm -iv'
 alias update='brew update && brew upgrade'
-
-# --- GIT PROMPT SETUP ---
-# curl -L https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh -o ~/.git-prompt.sh
-if [ -f "$HOME/.git-prompt.sh" ]; then
-    source "$HOME/.git-prompt.sh"
-fi
 
 # --- ZSH HISTORY SETTINGS ---
 HISTSIZE=1000
@@ -92,17 +72,6 @@ precmd_functions+=(build_prompt)
 if command -v fzf >/dev/null 2>&1; then
     eval "$(fzf --zsh)"
 fi
-
-# --- CUSTOM FUNCTIONS ---
-mkcd() {
-    mkdir -p "$1" && cd "$1"
-}
-
-# Auto-attach tmux on SSH login
-if [[ -o interactive ]] && [[ -z "$TMUX" ]] && [[ -n "$SSH_TTY" ]]; then
-    tmux attach-session -t main || tmux new-session -s main
-fi
-
 
 cd ~
 

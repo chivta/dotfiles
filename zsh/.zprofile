@@ -1,14 +1,5 @@
 # --- EXPORTS & PATHS (login shell env) ---
-export GOPATH="$HOME/go"
-export PATH="$GOPATH/bin:$PATH"
-export PATH="$HOME/.local/bin:$PATH"
-export PATH="$HOME/.local/npm/bin:$PATH"
-export PATH="$HOME/.cargo/bin:$PATH"
-export PATH="$HOME/.tfenv/bin:$PATH"
-export PATH="$HOME/go/bin:$PATH"
-export PAGER='less'
-export LESS='-RFX --mouse'
-export KUBECONFIG="$HOME/.kube/config"
+source "$HOME/.config/shell/env.sh"
 
 # Added by OrbStack: command-line tools and integration
 # This won't be added again if you remove it.
