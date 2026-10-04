@@ -4,5 +4,5 @@
 export GOPATH="${GOPATH:-$HOME/go}"
 export PATH="$HOME/.local/bin:$HOME/.local/npm/bin:$HOME/.cargo/bin:$HOME/.tfenv/bin:$GOPATH/bin:$PATH"
 export PAGER='less'
-export LESS='-RFX --mouse'
+export LESS='-RF --mouse'
 export KUBECONFIG="$HOME/.kube/config"
