@@ -68,6 +68,8 @@ ${c_frame}└─${c_symbol}\$${reset} "
 precmd_functions+=(build_prompt)
 
 # --- TOOLS ---
+autoload -Uz compinit && compinit
+
 # FZF keybindings + completion (installed via: brew install fzf)
 if command -v fzf >/dev/null 2>&1; then
     eval "$(fzf --zsh)"
