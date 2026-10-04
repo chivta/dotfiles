@@ -1,0 +1,63 @@
+@define-color foreground #eeeeee;
+@define-color foreground-inactive #aaaaaa;
+@define-color background #000000;
+
+* {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 13px;
+    padding: 0;
+    margin: 0;
+}
+
+#waybar {
+    color: @foreground;
+    background-color: rgba(0, 0, 0, 0.75);
+}
+
+#workspaces button {
+    /* color: @foreground; */
+    /* padding: 0; */
+    min-width: 1.5em;
+    min-height: 0.8em;
+}
+
+#workspaces button.active {
+    color: @foreground;
+    background-color: rgba(238, 238, 238, 0.5);
+    margin: 0.18em;
+    padding: 0.18em;
+}
+
+#workspaces button.empty {
+    color: @foreground-inactive;
+}
+
+#clock {
+    font-size: 14px;
+}
+
+#memory,
+#custom-platform-profile {
+    padding-left: 1em
+}
+
+#wireplumber,
+#battery,
+#language,
+#network,
+#bluetooth,
+#tray,
+#custom-swaync {
+    padding-right: 1em
+}
+
+#custom-wireguard {
+    padding-right: 1em;
+    font-size: 14px;
+    color: @foreground;
+}
+
+#custom-wireguard.active {
+    color: #a6e3a1;
+}
+
