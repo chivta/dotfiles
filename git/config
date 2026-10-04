@@ -1,5 +1,5 @@
 [diff]
-    external = difft
+    external = env DFT_BYTE_LIMIT=500000 difft
 [user]
 	email = arvlas78@gmail.com
 	name = Artem
