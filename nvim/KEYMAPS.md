@@ -17,6 +17,7 @@ These keys do something different from what `:Tutor`, vim-be-good or any Vim tut
 | `<leader>X` | n | none | cut to end of line | `lua/config/remap.lua` |
 | `<C-p>` | n | line up | find files (fff) | `after/plugin/fff.lua` |
 | `<C-e>` | n | scroll down one line | harpoon menu | `after/plugin/harpoon.lua` |
+| `<C-u>`, `<C-d>`, `<C-b>`, `<C-f>`, `zt`, `zz`, `zb` | n, x | jump instantly | same motion, animated (neoscroll) | `after/plugin/neoscroll.lua` |
 | `-` | n | line up, first non-blank | open parent directory (oil) | `after/plugin/oil.lua` |
 | `hjkl` repeats | n | move | blocked by hardtime after a few presses | `after/plugin/trainers.lua` |
 | arrow keys | n, x, o, i | move | disabled by hardtime (mouse and trackpad scrolling still work) | `after/plugin/trainers.lua` |

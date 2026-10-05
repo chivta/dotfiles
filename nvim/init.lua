@@ -48,6 +48,7 @@ vim.pack.add({
     "https://github.com/m4xshen/hardtime.nvim",
     "https://github.com/tris203/precognition.nvim",
     "https://github.com/ThePrimeagen/vim-be-good",
+    "https://github.com/karb94/neoscroll.nvim",
 })
 
 
