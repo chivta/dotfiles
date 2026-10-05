@@ -13,3 +13,9 @@ end
 vim.keymap.set({ "n", "x" }, "<leader>x", "d", { desc = "Cut" })
 vim.keymap.set("n", "<leader>xx", "dd", { desc = "Cut line" })
 vim.keymap.set("n", "<leader>X", "D", { desc = "Cut to end of line" })
+
+-- p and P are swapped in normal mode: p puts above the current line (or
+-- before the cursor for charwise text), P puts below (or after). Visual mode
+-- keeps the stock keys.
+vim.keymap.set("n", "p", "P", { desc = "Put before" })
+vim.keymap.set("n", "P", "p", { desc = "Put after" })

@@ -15,6 +15,7 @@ These keys do something different from what `:Tutor`, vim-be-good or any Vim tut
 | `<leader>x{motion}` | n, x | none | cut: delete and copy to clipboard (`<leader>xiw`, visual `<leader>x`) | `lua/config/remap.lua` |
 | `<leader>xx` | n | none | cut line | `lua/config/remap.lua` |
 | `<leader>X` | n | none | cut to end of line | `lua/config/remap.lua` |
+| `p`, `P` | n | `p` puts after the cursor or below the line, `P` before or above | swapped: `p` puts before or above, `P` after or below | `lua/config/remap.lua` |
 | `<C-p>` | n | line up | find files (fff) | `after/plugin/fff.lua` |
 | `<C-e>` | n | scroll down one line | harpoon menu | `after/plugin/harpoon.lua` |
 | `<C-u>`, `<C-d>`, `<C-b>`, `<C-f>`, `zt`, `zz`, `zb` | n, x | jump instantly | same motion, animated (neoscroll) | `after/plugin/neoscroll.lua` |
