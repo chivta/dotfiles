@@ -22,7 +22,7 @@
 -- Main monitor, landscape, left.
 local MAIN_MONITOR = "desc:Acer Technologies VG270 TEGEE0018512"
 -- Secondary monitor, physically rotated 90 degrees, right.
-local SIDE_MONITOR = "desc:Iiyama North America PLX2380H 11177G5900770"
+local SIDE_MONITOR = "desc:iiyama Corporation PLX2380H 11177G5900770"
 
 hl.monitor({
   output = MAIN_MONITOR,
@@ -46,7 +46,7 @@ hl.monitor({
 
 local terminal    = "kitty"
 local fileManager = "dolphin"
-local menu        = "GTK_THEME=Adwaita:dark wofi --show drun --gtk-dark --matching=fuzzy --insensitive"
+local menu        = "fuzzel"
 
 
 --################
@@ -166,6 +166,14 @@ hl.window_rule({
 hl.window_rule({
     match = { initial_class = "^.*steam.*$" },
     workspace = "4 silent",
+})
+
+-- fuzzel: blur behind the launcher. ignore_alpha keeps the transparent area
+-- outside its rounded corners sharp.
+hl.layer_rule({
+    match = { namespace = "^launcher$" },
+    blur = true,
+    ignore_alpha = 0.5,
 })
 
 hl.window_rule({
