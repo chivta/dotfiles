@@ -3,8 +3,8 @@
 -- Keymaps are the 0.12 defaults (grn, gra, grr, gri, grt, grx, gO, K) plus
 -- <leader>uh to toggle inlay hints.
 -- Copilot ghost text comes from the copilot LSP through built-in inline
--- completion: <C-l> accept, <C-g> next suggestion, <leader>ua toggle. Sign in
--- once with :LspCopilotSignIn.
+-- completion: <Tab> accepts (wired in blink.lua), <C-g> next suggestion,
+-- <leader>ua toggle. Sign in once with :LspCopilotSignIn.
 local SERVERS = { "gopls", "vtsls", "lua_ls", "copilot" }
 
 -- Mason package names, installed on startup when missing.
@@ -42,7 +42,6 @@ end, { desc = "Toggle inlay hints" })
 
 vim.lsp.inline_completion.enable()
 
-vim.keymap.set("i", "<C-l>", vim.lsp.inline_completion.get, { desc = "Accept AI suggestion" })
 vim.keymap.set("i", "<C-g>", vim.lsp.inline_completion.select, { desc = "Next AI suggestion" })
 vim.keymap.set("n", "<leader>ua", function()
   vim.lsp.inline_completion.enable(not vim.lsp.inline_completion.is_enabled())

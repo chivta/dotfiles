@@ -73,16 +73,20 @@ Neovim 0.12 defaults, not remapped. Active in any buffer with a language server 
 
 ## Completion and AI suggestions
 
+Keys follow VSCode. `<Tab>` tries each action in order: accept the menu item, accept the Copilot ghost text, jump to the next snippet placeholder, insert a tab.
+
 | Keys | Mode | Action | Defined in |
 |---|---|---|---|
-| `<C-space>` | i | open completion menu | blink default preset |
-| `<C-n>`, `<C-p>` | i | next, previous item | blink default preset |
-| `<C-y>` | i | accept item | blink default preset |
-| `<C-e>` | i | close menu | blink default preset |
-| `<C-b>`, `<C-f>` | i | scroll docs popup | blink default preset |
-| `<C-k>` | i | signature help | blink default preset |
-| `<Tab>`, `<S-Tab>` | i | jump between snippet placeholders | blink default preset |
-| `<C-l>` | i | accept Copilot suggestion | `after/plugin/lsp.lua` |
+| `<Tab>` | i | accept menu item, else Copilot suggestion, else next snippet placeholder, else tab | `after/plugin/blink.lua` |
+| `<CR>` | i | accept menu item, else newline | blink enter preset |
+| `<Up>`, `<Down>` | i | previous, next item (blocked by hardtime when no menu is open) | blink enter preset |
+| `<C-n>`, `<C-p>` | i | next, previous item | blink enter preset |
+| `<C-y>` | i | accept item | `after/plugin/blink.lua` |
+| `<C-space>` | i | open completion menu | blink enter preset |
+| `<C-e>` | i | close menu | blink enter preset |
+| `<C-b>`, `<C-f>` | i | scroll docs popup | blink enter preset |
+| `<C-k>` | i | signature help | blink enter preset |
+| `<S-Tab>` | i | previous snippet placeholder | blink enter preset |
 | `<C-g>` | i | next Copilot suggestion | `after/plugin/lsp.lua` |
 | `<leader>ua` | n | toggle Copilot suggestions | `after/plugin/lsp.lua` |
 
