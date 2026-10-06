@@ -14,6 +14,13 @@ backward-kill-space-then-word() {
 zle -N backward-kill-space-then-word
 bindkey '^W' backward-kill-space-then-word
 bindkey '^[^?' backward-kill-space-then-word
+
+# alt+right: stop at word and punctuation boundaries, skipping only whitespace
+forward-word-stop-at-punct() {
+  [[ $RBUFFER =~ '^([[:alnum:]]+|[^[:alnum:][:space:]]+)?[[:space:]]*' ]] && (( CURSOR += $#MATCH ))
+}
+zle -N forward-word-stop-at-punct
+bindkey '^[f' forward-word-stop-at-punct
 # --- ALIASES ---
 # Shared aliases, functions, git prompt and SSH tmux attach
 source "$HOME/.config/shell/rc.sh"
