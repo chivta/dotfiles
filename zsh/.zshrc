@@ -13,7 +13,15 @@ backward-kill-space-then-word() {
 }
 zle -N backward-kill-space-then-word
 bindkey '^W' backward-kill-space-then-word
-bindkey '^[^?' backward-kill-space-then-word
+
+# alt+backspace: delete one run of whitespace, letters/digits or punctuation
+backward-kill-run() {
+  [[ $LBUFFER =~ '([[:space:]]+|[[:alnum:]]+|[^[:alnum:][:space:]]+)$' ]] || return
+  (( MARK = CURSOR - $#MATCH ))
+  zle kill-region
+}
+zle -N backward-kill-run
+bindkey '^[^?' backward-kill-run
 
 # alt+right: stop at word and punctuation boundaries, skipping only whitespace
 forward-word-stop-at-punct() {
