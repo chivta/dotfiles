@@ -4,5 +4,11 @@ karabiner/automatic_backups/
 # Per-machine git settings, see the [include] in git/config
 git/config.local
 
+# Agents write these into the shared skills dir: Claude.ai skill sync, Claude
+# Code's skill manager trash, Codex's bundled system skills
+claude/skills/synced/
+claude/skills/.trash/
+claude/skills/.system/
+
 .DS_Store
 zsh/.zcompdump

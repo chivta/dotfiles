@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: mybot
+
+resources:
+  - namespace.yaml
+  # SOPS-encrypted; the reconciler decrypts it in-cluster with the age key it
+  # holds as a secret. Edit k8s/secrets.yaml (gitignored) and re-run
+  # `sops -e k8s/secrets.yaml > k8s/secrets.enc.yaml` to change a value.
+  - secrets.enc.yaml
+  - bot/pvc.yaml
+  - bot/deployment.yaml

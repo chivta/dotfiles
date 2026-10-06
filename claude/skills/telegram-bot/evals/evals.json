@@ -1,0 +1,52 @@
+{
+  "skill_name": "telegram-bot",
+  "evals": [
+    {
+      "id": 0,
+      "name": "greenfield-request-response",
+      "prompt": "i want a telegram bot that takes a city name and replies with the current weather. should remember the last thing each user asked for. set it up so i can deploy it to my cluster the same way as my other stuff",
+      "expected_output": "A Go bot on telebot v4 storing state in SQLite (not Postgres), with a non-blocking handler, a shared outbound rate limiter, HTML escaping, an ALLOWED_USERS allow list, and a single-replica Recreate deployment.",
+      "files": [],
+      "assertions": [
+        "Uses telebot v4 (gopkg.in/telebot.v4)",
+        "Persists state in SQLite via modernc.org/sqlite, not Postgres or any other server database",
+        "Opens SQLite with WAL journal mode and a busy_timeout pragma",
+        "The message handler does not block on the weather lookup: it sends a placeholder message and hands the work to a queue or worker, then returns",
+        "A single shared outbound rate limiter (golang.org/x/time/rate) paces every send, edit and delete, rather than each call site sending freely",
+        "Values interpolated into HTML-mode messages are run through an escape helper",
+        "Access is gated by an ALLOWED_USERS allow list, with an empty list explicitly meaning the bot is public",
+        "The deployment runs exactly one replica with strategy: Recreate"
+      ]
+    },
+    {
+      "id": 1,
+      "name": "poller-notifier-shape",
+      "prompt": "need a bot that checks an RSS feed every 15 min and posts new entries to my telegram. just me, one chat. if the feed url starts 404ing i want to be told about it rather than the thing dying quietly",
+      "expected_output": "A ticker-driven watcher on telebot v4, pinned to one CHAT_ID, deduping in SQLite, escaping untrusted feed text, pacing bulk posts through a shared limiter, deployed as one Recreate replica.",
+      "files": [],
+      "assertions": [
+        "Uses telebot v4 (gopkg.in/telebot.v4)",
+        "Posts to a single chat ID pinned in configuration, and ignores updates arriving from any other chat",
+        "Persists which entries were already sent in SQLite via modernc.org/sqlite, so a restart does not re-post old entries",
+        "Opens SQLite with WAL journal mode and a busy_timeout pragma",
+        "Feed-supplied text (titles, descriptions) is escaped before being interpolated into an HTML-mode message",
+        "Posting a batch of new entries is paced by a shared outbound rate limiter rather than sent in an unthrottled loop",
+        "The deployment runs exactly one replica with strategy: Recreate"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "extend-existing-bot",
+      "prompt": "my go telegram bot currently just replies to /start. i want to add a /stats command that shows how many requests each user has made this week, and it needs to survive restarts. where does that code go?",
+      "expected_output": "Counts persisted in SQLite via modernc.org/sqlite on a real volume, the /stats handler not blocking the update loop on the query, and usernames escaped before rendering.",
+      "files": [],
+      "assertions": [
+        "Recommends SQLite via modernc.org/sqlite for the counts rather than Postgres or an in-memory store",
+        "The /stats handler does not block the update loop on an unbounded query: the call is bounded by a timeout or handed off",
+        "Usernames or other user-supplied text are escaped before being interpolated into the rendered stats message",
+        "States that surviving restarts requires the database file to sit on a real volume, not the container filesystem",
+        "Notes that the deployment must stay at one replica with strategy: Recreate rather than scaling out"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+creation_rules:
+  - path_regex: k8s/secrets.yaml
+    # Only the values are encrypted, so the file stays reviewable in a diff:
+    # you can see that a key changed without being able to read it.
+    encrypted_regex: ^(data|stringData)$
+    # The cluster's age key (held in-cluster by the reconciler) plus a local
+    # dev key, so the file can be decrypted and edited without the cluster.
+    age: >-
+      REPLACE_WITH_CLUSTER_AGE_PUBLIC_KEY,
+      REPLACE_WITH_LOCAL_AGE_PUBLIC_KEY

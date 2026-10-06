@@ -1,0 +1,107 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mybot
+  namespace: mybot
+  labels:
+    app: mybot
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  # The SQLite file lives on a ReadWriteOnce volume, so the old pod must be gone
+  # before the new one starts. A rolling update would deadlock on the mount.
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: mybot
+  template:
+    metadata:
+      labels:
+        app: mybot
+    spec:
+      # Long enough for work that is already uploading to Telegram to finish;
+      # anything slower is cut off and the user simply asks again.
+      terminationGracePeriodSeconds: 60
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+      containers:
+        - name: mybot
+          # Rewritten by the CD workflow on every deploy. The sed there matches
+          # this exact shape, so keep it on one line.
+          image: ghcr.io/example/mybot:latest
+          ports:
+            - name: http
+              containerPort: 8080
+          envFrom:
+            - secretRef:
+                name: app-secrets
+          env:
+            - name: DB_PATH
+              value: /app/data/mybot.db
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            - name: data
+              mountPath: /app/data
+            # readOnlyRootFilesystem still needs somewhere to write scratch.
+            - name: tmp
+              mountPath: /tmp
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          # A cold start that has to migrate or fetch something can outlast the
+          # liveness budget; the startup probe covers that window and holds
+          # liveness off until it succeeds.
+          startupProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            periodSeconds: 5
+            failureThreshold: 60
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            periodSeconds: 10
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            periodSeconds: 10
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: mybot
+        - name: tmp
+          emptyDir: { sizeLimit: 1Gi }
+      imagePullSecrets:
+        - name: ghcr-secret
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mybot-svc
+  namespace: mybot
+  labels:
+    app: mybot
+spec:
+  selector:
+    app: mybot
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+  type: ClusterIP

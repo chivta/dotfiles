@@ -8,6 +8,8 @@ DOT="$(cd "$(dirname "$0")" && pwd)"
 TPM_DIR="$HOME/.tmux/plugins/tpm"
 TPM_REPO="https://github.com/tmux-plugins/tpm"
 SHARED_CONFIGS="shell kitty nvim git tmux"
+# Codex and pi read the same instructions and skills as Claude Code
+AGENT_HOMES="$HOME/.codex $HOME/.pi/agent"
 
 # link <repo path> <target>
 link() {
@@ -21,6 +23,16 @@ link() {
 }
 
 for d in $SHARED_CONFIGS; do link "$d" "$HOME/.config/$d"; done
+
+# Only these entries are linked, the rest of ~/.claude, ~/.codex and ~/.pi/agent
+# is runtime state the agents write themselves. settings.json stays per-machine.
+link claude/CLAUDE.md "$HOME/.claude/CLAUDE.md"
+link claude/skills "$HOME/.claude/skills"
+link claude/hooks "$HOME/.claude/hooks"
+for a in $AGENT_HOMES; do
+  link claude/CLAUDE.md "$a/AGENTS.md"
+  link claude/skills "$a/skills"
+done
 
 case "$(uname -s)" in
   Darwin)
