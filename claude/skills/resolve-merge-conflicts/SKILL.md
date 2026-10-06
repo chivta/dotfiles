@@ -11,8 +11,10 @@ description: Use when you need to resolve an in-progress git merge/rebase confli
 
 4. Discover the project's **automated checks** and run them — typically typecheck, then tests, then format. Fix anything the merge broke.
 
-5. **Finish the merge/rebase.** Stage everything and commit. If rebasing, continue the rebase process until all commits are rebased. NEVER PUSH.
+5. **Finish the merge/rebase.** Stage everything and commit. If rebasing, continue the rebase process until all commits are rebased.
 
 6. **Run the automated checks again** to ensure nothing is broken after the merge/rebase.
 
-7. **Explain conflict to the user**. If the merge/rebase was complex, write a short summary of what was done and why. Include any trade-offs made, and any follow-up work that may be needed. If conflict is trivial say so and don't add any context.
+7. **Explain conflict to the user**. If the merge/rebase was complex, write a short summary of what was done and why. Include any trade-offs made, and any follow-up work that may be needed. If conflict was trivial say so and don't add any context.
+
+8. **Push the changes** to the remote repository, only if conflict was trivial, otherwise wait for a code review from the user.

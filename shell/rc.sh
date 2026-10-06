@@ -3,6 +3,10 @@
 # (keybinds, prompt, history, ls flags) stay in those files.
 
 # --- ALIASES ---
+alias claude2='CLAUDE_CONFIG_DIR="$HOME/.claude2" claude'
+alias ccc2='CLAUDE_CONFIG_DIR="$HOME/.claude2" claude --continue'
+alias cc2='CLAUDE_CONFIG_DIR="$HOME/.claude2" claude'
+alias diffthing='diff --offline'
 alias c='claude'
 alias cc='claude'
 alias ccc='claude --continue'

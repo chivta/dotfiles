@@ -5,6 +5,7 @@
 	name = Artem
 [alias]
 	nb = !git checkout main && git pull && git checkout -b
+    wt = worktree
 	stat = status
 	s = status
 	co = checkout
