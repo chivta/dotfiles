@@ -21,6 +21,16 @@ alias grep='grep --color=auto'
 alias sudp='sudo'
 alias bc='bc -q'
 
+# git-show does not honor diff.external unless --ext-diff is passed.
+git() {
+    if [ "$1" = show ]; then
+        shift
+        command git show --ext-diff "$@"
+    else
+        command git "$@"
+    fi
+}
+
 # Navigation & Safety
 alias ..='cd ..'
 alias ...='cd ../..'
