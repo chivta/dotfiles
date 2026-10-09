@@ -82,6 +82,17 @@ ${c_frame}└─${c_symbol}\$${reset} "
 }
 precmd_functions+=(build_prompt)
 
+# Inside tmux, mark each prompt (OSC 133;A) and the start of each command's
+# output (OSC 133;C). tmux's copy mode jumps between them, and kitmux's
+# cmd+shift+c uses that to copy the last command's output. Plain kitty tabs get
+# these marks from kitty's own shell integration, so this stays tmux-only.
+if [[ -n $TMUX ]]; then
+    _osc133_prompt() { print -n '\e]133;A\e\\' }
+    _osc133_output() { print -n '\e]133;C\e\\' }
+    precmd_functions+=(_osc133_prompt)
+    preexec_functions+=(_osc133_output)
+fi
+
 # --- TOOLS ---
 autoload -Uz compinit && compinit
 
