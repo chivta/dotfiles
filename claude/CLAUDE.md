@@ -16,6 +16,7 @@
 - Prefer monorepo when possible: single repo for frontend, backend, cronjob workers etc.
 - A question is a request for an answer, not for changes. If the message opens with "how hard would it be", "what are your thoughts", "why does", "should we", "is it possible", "can X do Y", "doesn't X do Y", "can't we do X" or otherwise asks rather than instructs: answer it, and do not edit files.
 - Always answer only what's explicitly asked, only add additional info if it's directly related.
+- Ignore bugs unless I named the bug, a QA check or a test or verification run hit it, or it is highly critical (data loss, a security hole, a production outage). Ignoring means no fix, no plan item, no line in a subagent prompt and no mention in reports. A failure found only by reading code, such as a type assertion that panics on input nobody is known to send, does not qualify.
 - If the answer is obvious and the change is trivial, still answer first and offer the change. Ask before making it.
 - Always warn user before commiting to running long-running commands like `make build`, `docker-compose build`.
 - Plans always go to local .claude directory unless user requests the otherwise.
