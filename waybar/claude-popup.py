@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Click popup for the Claude usage module: shows the markup claude-usage.sh last wrote."""
 import os
-import subprocess
 import sys
 
 import gi
@@ -9,9 +8,10 @@ import gi
 gi.require_version("Gtk", "3.0")
 gi.require_version("Gdk", "3.0")
 gi.require_version("GtkLayerShell", "0.1")
-from gi.repository import Gdk, Gio, Gtk, GtkLayerShell
+from gi.repository import Gdk, Gio, GLib, Gtk, GtkLayerShell
 
 APP_ID = "dev.arvlas.ClaudePopup"
+NAMESPACE = "claude-popup"
 MARKUP_PATH = os.path.join(
     os.environ.get("XDG_CACHE_HOME", os.path.expanduser("~/.cache")), "claude-usage", "popup.markup"
 )
@@ -29,11 +29,6 @@ window, eventbox { background: transparent; }
 """
 
 
-def pointer():
-    x, y = subprocess.check_output(["hyprctl", "cursorpos"], text=True).split(",")
-    return int(x), int(y)
-
-
 def monitor_at(display, x, y):
     for i in range(display.get_n_monitors()):
         mon = display.get_monitor(i)
@@ -44,28 +39,46 @@ def monitor_at(display, x, y):
 
 
 class Popup(Gtk.Application):
-    def __init__(self):
+    """Stays resident so a click only costs a D-Bus call; Python/GTK startup is paid once."""
+
+    def __init__(self, first_pos):
         super().__init__(application_id=APP_ID, flags=Gio.ApplicationFlags.FLAGS_NONE)
         self.win = None
+        self.first_pos = first_pos
 
-    def do_activate(self):
-        if self.win is not None:
-            self.win.destroy()
-            return
-        self.show()
-
-    def show(self):
-        try:
-            with open(MARKUP_PATH) as f:
-                markup = f.read()
-        except OSError:
-            markup = "No usage data yet"
-
+    def do_startup(self):
+        Gtk.Application.do_startup(self)
+        self.hold()
         provider = Gtk.CssProvider()
         provider.load_from_data(CSS)
         Gtk.StyleContext.add_provider_for_screen(
             Gdk.Screen.get_default(), provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
         )
+        action = Gio.SimpleAction.new("toggle", GLib.VariantType.new("s"))
+        action.connect("activate", self.on_toggle)
+        self.add_action(action)
+
+    def do_activate(self):
+        # Only the first launch lands here with a position; later plain activations just close.
+        if self.first_pos is not None:
+            pos, self.first_pos = self.first_pos, None
+            self.show(*pos)
+        elif self.win is not None:
+            self.win.destroy()
+
+    def on_toggle(self, _action, param):
+        if self.win is not None:
+            self.win.destroy()
+            return
+        x, y = param.get_string().split(",")
+        self.show(int(float(x)), int(float(y)))
+
+    def show(self, px, py):
+        try:
+            with open(MARKUP_PATH) as f:
+                markup = f.read()
+        except OSError:
+            markup = "No usage data yet"
 
         win = Gtk.Window(application=self)
         win.set_app_paintable(True)
@@ -76,7 +89,6 @@ class Popup(Gtk.Application):
         label.set_markup(markup)
         card.add(label)
 
-        px, py = pointer()
         mon = monitor_at(win.get_display(), px, py)
         geo = mon.get_geometry()
         card.set_halign(Gtk.Align.START)
@@ -99,6 +111,7 @@ class Popup(Gtk.Application):
 
         GtkLayerShell.init_for_window(win)
         GtkLayerShell.set_layer(win, GtkLayerShell.Layer.OVERLAY)
+        GtkLayerShell.set_namespace(win, NAMESPACE)
         GtkLayerShell.set_monitor(win, mon)
         GtkLayerShell.set_exclusive_zone(win, -1)
         GtkLayerShell.set_keyboard_mode(win, GtkLayerShell.KeyboardMode.EXCLUSIVE)
@@ -112,8 +125,11 @@ class Popup(Gtk.Application):
 
     def on_destroy(self, _win):
         self.win = None
-        self.quit()
 
 
 if __name__ == "__main__":
-    sys.exit(Popup().run(sys.argv))
+    pos = None
+    if len(sys.argv) > 1:
+        x, y = sys.argv[1].split(",")
+        pos = (int(float(x)), int(float(y)))
+    sys.exit(Popup(pos).run([sys.argv[0]]))

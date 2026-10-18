@@ -87,7 +87,7 @@
         "size": 36,
         "interval": 60,
         "tooltip": false,
-        "on-click": "~/.config/waybar/claude-popup.py"
+        "on-click": "~/.config/waybar/claude-popup.sh"
     },
 
     "custom/swaync": {
