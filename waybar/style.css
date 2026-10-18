@@ -47,7 +47,8 @@
 #network,
 #bluetooth,
 #tray,
-#custom-swaync {
+#custom-swaync,
+#custom-claude {
     padding-right: 1em
 }
 
@@ -61,3 +62,15 @@
     color: #a6e3a1;
 }
 
+
+/* restyles every Waybar tooltip, not only the Claude one */
+tooltip {
+    background-color: #1c1c1e;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+}
+
+tooltip label {
+    color: @foreground;
+    padding: 12px 14px;
+}

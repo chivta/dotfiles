@@ -6,7 +6,7 @@
 
     "modules-left": ["hyprland/workspaces"],
     "modules-center": ["clock"],
-    "modules-right": ["wireplumber", "custom/wireguard", "hyprland/language", "tray", "custom/swaync"],
+    "modules-right": ["custom/claude", "wireplumber", "custom/wireguard", "hyprland/language", "tray", "custom/swaync"],
 	
 
     "hyprland/workspaces": {
@@ -81,6 +81,14 @@
     //     },
     //     "on-click": "/home/arvlas/.local/bin/wg-toggle"
     // },
+
+    "custom/claude": {
+        "exec": "~/.config/waybar/claude-usage.sh",
+        "return-type": "json",
+        "interval": 300,
+        "justify": "center",
+        "on-click": "xdg-open https://claude.ai/settings/usage"
+    },
 
     "custom/swaync": {
         "tooltip": false,
