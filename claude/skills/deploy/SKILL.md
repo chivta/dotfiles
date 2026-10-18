@@ -1,7 +1,6 @@
 ---
 name: deploy
-description: Deploy an application to the k3s homelab cluster through Flux, covering manifests, SOPS secrets, CI/CD, and registration in the homelab repo.
-disable-model-invocation: true
+description: Deploy an application to the k3s homelab cluster through Flux, covering manifests, SOPS secrets, CI/CD, and registration in the homelab repo. Use only if user directly mentions deploy to personal kubernetes when working on personal project.
 ---
 
 # Deploying to the k3s cluster
@@ -24,17 +23,17 @@ The only way to change what runs is a commit to the app repo or to homelab, and 
 
 Do not rebuild any of this.
 
-| Thing | Where it lives | How to use it |
-|---|---|---|
-| Flux | `clusters/main/flux-system` (generated, do not edit) | Watches `clusters/main` every 10m |
-| App registry | `clusters/main/apps/<app>/` + an entry in `apps/kustomization.yaml` | One `GitRepository` + one `Kustomization` per app |
-| Traefik | `clusters/main/infrastructure/traefik` | `ingressClassName: traefik` |
-| TLS | Traefik `letsencrypt` resolver, DNS-01 via Cloudflare, wildcard `*.chivtar.dev` | Set the host to `<app>.chivtar.dev` and omit the `tls:` block entirely |
-| Prometheus | kube-prometheus-stack in `monitoring` | Add a `ServiceMonitor` next to the service |
-| Pushgateway | `http://prometheus-pushgateway.monitoring.svc.cluster.local:9091` | For one-shot jobs that exit before a scrape |
-| Image pulls | k3s `/etc/rancher/k3s/registries.yaml` on the node holds a `read:packages` PAT for `ghcr.io` | Nothing. Pods pull public and private GHCR images without `imagePullSecrets` |
-| Git auth | Flux secret `github-app` in `flux-system`, a GitHub App with read-only Contents on all `chivta` repos | `provider: github` + `secretRef` on every `GitRepository` |
-| SOPS decryption | Flux secret `apps-sops-age` in `flux-system`, the private half of the shared app key | Reference it from the app's Flux `Kustomization` |
+| Thing           | Where it lives                                                                                        | How to use it                                                                |
+| --------------- | ----------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| Flux            | `clusters/main/flux-system` (generated, do not edit)                                                  | Watches `clusters/main` every 10m                                            |
+| App registry    | `clusters/main/apps/<app>/` + an entry in `apps/kustomization.yaml`                                   | One `GitRepository` + one `Kustomization` per app                            |
+| Traefik         | `clusters/main/infrastructure/traefik`                                                                | `ingressClassName: traefik`                                                  |
+| TLS             | Traefik `letsencrypt` resolver, DNS-01 via Cloudflare, wildcard `*.chivtar.dev`                       | Set the host to `<app>.chivtar.dev` and omit the `tls:` block entirely       |
+| Prometheus      | kube-prometheus-stack in `monitoring`                                                                 | Add a `ServiceMonitor` next to the service                                   |
+| Pushgateway     | `http://prometheus-pushgateway.monitoring.svc.cluster.local:9091`                                     | For one-shot jobs that exit before a scrape                                  |
+| Image pulls     | k3s `/etc/rancher/k3s/registries.yaml` on the node holds a `read:packages` PAT for `ghcr.io`          | Nothing. Pods pull public and private GHCR images without `imagePullSecrets` |
+| Git auth        | Flux secret `github-app` in `flux-system`, a GitHub App with read-only Contents on all `chivta` repos | `provider: github` + `secretRef` on every `GitRepository`                    |
+| SOPS decryption | Flux secret `apps-sops-age` in `flux-system`, the private half of the shared app key                  | Reference it from the app's Flux `Kustomization`                             |
 
 Storage is local-path (k3s default), so every volume is `ReadWriteOnce` and effectively pinned to the node.
 
