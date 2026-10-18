@@ -4,6 +4,7 @@
 	email = arvlas78@gmail.com
 	name = Artem
 [alias]
+    cl = clone
 	nb = !git checkout main && git pull && git checkout -b
     wt = worktree
 	stat = status

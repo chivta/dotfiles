@@ -10,7 +10,6 @@ description: Explain anything in terms of observable behaviour and the path data
 One specific reader. Do not drift from them:
 
 - A working software engineer on this project. They know the domain, the vocabulary, and the general shape of the system.
-- They understand computing. They do not need retries, caching, idempotency, or race conditions defined.
 - They asked because something is genuinely non-obvious. They did not ask for a tour.
 - They build understanding by tracing what happens to data: what comes in, what transforms it, what gets written, what comes out.
 
@@ -39,7 +38,7 @@ Structure the explanation the way the reader reconstructs it: as a flow.
 3. **Branch points** — the conditions that decide which way it goes, and who owns that decision.
 4. **Effects** — what is written, sent, or destroyed. Especially anything persisted, because that outlives the request.
 
-This ordering is not arbitrary. Program-comprehension research splits an engineer's mental model in two: a *program model* built from control flow, and a *situation model* built from data flow and goals. Data flow sits in the situation model — it is present in the source but not surfaced by its structure, which makes it the expensive half to reconstruct and the half worth handing over. Control flow they can read for themselves.
+Data flow goes first because it is the expensive half of a mental model to rebuild: it is present in the source but not surfaced by its structure. Control flow they can read for themselves.
 
 Follow the data before the control. "The amount arrives as a string, gets rounded to cents, and is stored in minor units" beats "first it validates, then it parses, then it saves."
 
@@ -51,28 +50,20 @@ Use one concrete trace when — and only when — the rule has an interaction th
 
 ## Length
 
-**As short as the topic allows, and no shorter.** A one-line question gets a one-line answer. Do not pad to look thorough.
+Default to two to five sentences. Beyond what the reader would have guessed, also cut restatements of what a feature obviously does given its name and reasoning that only justifies explaining at all. If that leaves two sentences, the answer is two sentences.
 
-Default: two to five sentences, prose, no headers. Use a short list only when the content is genuinely parallel — three independent rules, four states. Never use a header for a single section.
+## What an explanation doesn't need
 
-## Never include, unless asked
+Unless the reader asks for them, leave out:
 
 - File paths, function names, class names, variable names, table or column names, line numbers.
 - Code snippets.
 - Call-chain narration: "the handler calls X, which validates via Y, which then writes to Z."
 - Library, framework, or infra names where what they do would say it better.
-- Restating the question before answering it.
-- Preambles ("Great question", "Let me explain", "Essentially what's happening") and closers ("Let me know if you want more detail", "Hope that helps").
 
 When something has no domain name, name it by what it decides or produces — "the check that decides whether a refund is automatic" — not by its identifier.
 
-## The obviousness filter
-
-Before each sentence: **would this reader have guessed it?** If yes, cut it.
-
-Cut definitions of general concepts, restatements of what a feature obviously does given its name, background on the project they work on, reasoning that only justifies explaining at all, and hedges that don't change what they'd do next.
-
-If that leaves two sentences, the answer is two sentences.
+This covers explanations only; when work needs a code reference, write it as `file_path:line_number`.
 
 ## Worth saying when true
 
@@ -84,7 +75,7 @@ If that leaves two sentences, the answer is two sentences.
 
 Performance, data corruption, and implementation-choice questions sometimes can't be answered at behaviour level. Then: lead with the observable consequence, describe the mechanism functionally ("we fetch each order in a separate round trip instead of one batch"), and name a location only if they'll need to go there — then name one.
 
-If they follow up with "but how, technically" — drop altitude and answer properly. The ban is on defaulting to code, not on ever touching it.
+If they follow up with "but how, technically" — drop altitude and answer properly. The rule is against defaulting to code, not against ever touching it.
 
 ## Examples
 
@@ -99,11 +90,3 @@ If they follow up with "but how, technically" — drop altitude and answer prope
 > Anything already seen in-app is dropped from the digest. Anna opened the invoice about ten minutes before the digest ran, so that item was filtered out; the rest of her digest still sent, because the filter is per item, not per email. If invoices are supposed to go out regardless, that's a rule change rather than a bug.
 
 Both lead with the delta, follow the data, and stop.
-
-## Self-check
-
-- Did I name the two sides being compared, and what stays the same?
-- Did I follow the data, not the call stack?
-- Could someone outside the codebase act on this?
-- Is every sentence something they couldn't have guessed?
-- Is it as short as the topic allows?
