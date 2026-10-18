@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Waybar image module: draws the Claude usage face from `claudebar --json` and saves the popup markup for claude-popup.py.
+# Waybar image module: draws the Claude usage face from the limits claude-statusline.sh saved and saves the popup markup for claude-popup.py.
 
 FONT='Noto Sans Mono'
 POPUP_COLS=32
@@ -24,24 +24,35 @@ COLOR_TRACK='#3a3a3c'
 COLOR_TICK='#32d4e6'
 COLOR_BADGE_BG='#3a3a3c'
 COLOR_OK='#32d74b'
-COLOR_STALE='#ffb340'
+COLOR_LOW='#98c379'
+COLOR_MID='#e5c07b'
+COLOR_HIGH='#d19a66'
+COLOR_CRITICAL='#e06c75'
+THRESHOLD_MID=50
+THRESHOLD_HIGH=75
+THRESHOLD_CRITICAL=90
+SESSION_SECONDS=18000
+WEEKLY_SECONDS=604800
+SECONDS_PER_DAY=86400
+NO_DATA_HINT=$'Send a message in Claude Code\nto load usage.'
 SECONDS_PER_HOUR=3600
 BAR_LINE_HEIGHT=0.4
 BAR_GAP_SIZE=2000
 RULE_GLYPH='─'
 HEADER_SIZE=large
 
-OUT_DIR=${XDG_RUNTIME_DIR:-/tmp}/claude-usage
+OUT_DIR=${XDG_CACHE_HOME:-$HOME/.cache}/claude-usage
 mkdir -p "$OUT_DIR"
 
-raw=$(claudebar --json 2>/dev/null)
-
-result=$(jq -c --argjson raw "$(jq -c . <<<"$raw" 2>/dev/null || echo null)" -n \
+result=$(jq -c --argjson raw "$(jq -c . "$OUT_DIR/rate-limits.json" 2>/dev/null || echo null)" --argjson now "$(date +%s)" -n \
   --arg font "$FONT" --arg tsz "$POPUP_SIZE" --argjson cols "$POPUP_COLS" \
   --argjson g "{\"w\":$SVG_W,\"h\":$SVG_H,\"x\":$GAUGE_X,\"y\":$GAUGE_Y,\"gw\":$GAUGE_W,\"gh\":$GAUGE_H,\"r\":$GAUGE_RADIUS,\"inset\":$GAUGE_INSET,\"minw\":$FILL_MIN_W,\"mw\":$MARKER_W,\"ly\":$LABEL_Y,\"ls\":$LABEL_SIZE}" \
   --arg lfont "$LABEL_FONT" --arg clabel "$COLOR_LABEL" --arg coutline "$COLOR_OUTLINE" \
   --arg dim "$COLOR_DIM" --arg track "$COLOR_TRACK" --arg tick "$COLOR_TICK" --arg badgebg "$COLOR_BADGE_BG" \
-  --arg ok "$COLOR_OK" --arg stalec "$COLOR_STALE" \
+  --arg ok "$COLOR_OK" --arg hint "$NO_DATA_HINT" \
+  --argjson spd "$SECONDS_PER_DAY" --argjson sess "$SESSION_SECONDS" --argjson week "$WEEKLY_SECONDS" \
+  --argjson tmid "$THRESHOLD_MID" --argjson thigh "$THRESHOLD_HIGH" --argjson tcrit "$THRESHOLD_CRITICAL" \
+  --arg clow "$COLOR_LOW" --arg cmid "$COLOR_MID" --arg chigh "$COLOR_HIGH" --arg ccrit "$COLOR_CRITICAL" \
   --argjson sph "$SECONDS_PER_HOUR" --arg lh "$BAR_LINE_HEIGHT" --arg gapsize "$BAR_GAP_SIZE" \
   --arg ruleg "$RULE_GLYPH" --arg hsize "$HEADER_SIZE" '
 def esc: tostring | gsub("&"; "&amp;") | gsub("<"; "&lt;") | gsub(">"; "&gt;");
@@ -64,67 +75,68 @@ def face($pct; $elapsed; $color; $label):
 
 def bar($pct; $elapsed; $color):
   (($pct | clamp(0; 100)) * $cols / 100 | round) as $fill
-  | (($elapsed | clamp(0; 100)) * $cols / 100 | floor | clamp(0; $cols - 1)) as $t0
+  | (if $elapsed == null then $cols else ($elapsed | clamp(0; 100)) * $cols / 100 | floor | clamp(0; $cols - 1) end) as $t0
   | def part($n; $bg): if $n <= 0 then "" else span("font_family=\"\($font)\" bgcolor=\"\($bg)\""; rep(" "; $n)) end;
     def seg($a; $b): (([$b, $fill] | min) - $a | clamp(0; $b - $a)) as $f | part($f; $color) + part($b - $a - $f; $track);
   span("size=\"\($gapsize)\""; " ") + "\n"
-  + span("line_height=\"\($lh)\""; seg(0; $t0) + part(1; $tick) + seg($t0 + 1; $cols))
+  + span("line_height=\"\($lh)\""; seg(0; $t0) + (if $elapsed == null then "" else part(1; $tick) + seg($t0 + 1; $cols) end))
   + "\n" + span("size=\"\($gapsize)\""; " ");
 
-def reset_line($unix):
-  ($unix | localtime) as $t
-  | (now | localtime | mktime) as $nowl
-  | ($t | mktime) as $tl
-  | (($nowl / 86400 | floor)) as $dn
-  | (($tl / 86400 | floor)) as $dr
-  | (if $dr == $dn then "Today \($t | strftime("%H:%M"))"
-     elif $dr == $dn + 1 then "Tomorrow \($t | strftime("%H:%M"))"
-     else $t | strftime("%b %d, %H:%M") end)
-  | "Resets " + .;
+def day($t): ($t | mktime) / $spd | floor;
 
-def section($pal):
-  ($pal[.state] // $pal.low // $ok) as $c
-  | (if .id == "session" then "Session Usage"
-     elif .group == null then "All models"
-     else .group end) as $title
-  | (if .id == "session" then "" else .label // "" end) as $badge
+def when($unix; $fmt):
+  ($unix | localtime) as $t
+  | (day($now | localtime)) as $dn
+  | day($t) as $dr
+  | if $dr == $dn then "Today \($t | strftime("%H:%M"))"
+    elif $dr == $dn + 1 then "Tomorrow \($t | strftime("%H:%M"))"
+    else $t | strftime($fmt) end;
+
+def updated($unix):
+  ($unix | localtime) as $t
+  | if day($t) == day($now | localtime) then $t | strftime("%H:%M") else $t | strftime("%b %d, %H:%M") end;
+
+def color($pct): if $pct >= $tcrit then $ccrit elif $pct >= $thigh then $chigh elif $pct >= $tmid then $cmid else $clow end;
+
+def section:
+  color(.used) as $c
+  | (if .id == "session" then "Session Usage" else "All models" end) as $title
+  | (if .id == "session" then "" else .label end) as $badge
   | ($title | length) as $tl
   | (if $badge == "" then 0 else ($badge | length) + 3 end) as $bl
-  | "\(.used_pct)%" as $pct
+  | "\(.used)%" as $pct
   | (rep(" "; $cols - $tl - $bl - ($pct | length))) as $pad
-  | span("weight=\"bold\""; $title | esc)
-    + (if $badge == "" then "" else " " + span("bgcolor=\"\($badgebg)\" foreground=\"\($dim)\""; " \($badge | esc) ") end)
+  | span("weight=\"bold\""; $title)
+    + (if $badge == "" then "" else " " + span("bgcolor=\"\($badgebg)\" foreground=\"\($dim)\""; " \($badge) ") end)
     + $pad + span("weight=\"bold\" foreground=\"\($c)\""; $pct)
     + "\n"
-    + (if .id == "session" then dimspan("\((.window_seconds / $sph) | round)-hour rolling window") + "\n" else "" end)
-    + bar(.used_pct; .elapsed_pct // 0; $c) + "\n"
-    + dimspan(reset_line(.reset_at_unix));
+    + (if .id == "session" then dimspan("\((.secs / $sph) | round)-hour rolling window") + "\n" else "" end)
+    + bar(.used; .elapsed; $c) + "\n"
+    + dimspan(if .expired then "Window reset" else "Resets " + when(.resets_at; "%b %d, %H:%M") end);
 
-def header($d; $dot; $status):
-  span("weight=\"bold\" size=\"\($hsize)\""; "Claude" + (if $d.plan then " \($d.plan | esc)" else "" end))
-  + "\n" + span("foreground=\"\($dot)\""; "●") + " " + dimspan($status)
+def header($status):
+  span("weight=\"bold\" size=\"\($hsize)\""; "Claude")
+  + "\n" + span("foreground=\"\($ok)\""; "●") + " " + dimspan($status)
   + "\n" + dimspan(rep($ruleg; $cols));
 
 def wrap($t): span("font_family=\"\($font)\" size=\"\($tsz)\""; $t);
 
-($raw // {error: {message: "claudebar unavailable"}}) as $d
-| ($d.palette // {}) as $pal
-| ($d.windows // []) as $ws
-| if $d.loading == true then
-    {face: face(null; null; null; "…"),
-     popup: wrap(header($d; $stalec; "Loading…") + "\n\nLoading…")}
-  elif $d.error != null or ($ws | length) == 0 then
+[{id: "session", label: "Session", key: "five_hour", secs: $sess},
+ {id: "weekly", label: "Weekly", key: "seven_day", secs: $week}] as $defs
+| ($raw // {}) as $d
+| [$defs[] | . as $w | ($d[$w.key] // null) as $l | select($l != null)
+    | ($l.resets_at <= $now) as $exp
+    | $w + {resets_at: $l.resets_at, expired: $exp,
+            used: (if $exp then 0 else ($l.used_percentage | round) end),
+            elapsed: (if $exp then null else 100 - ($l.resets_at - $now) / $w.secs * 100 | clamp(0; 100) end)}] as $ws
+| if ($ws | length) == 0 then
     {face: face(null; null; null; "--%"),
-     popup: wrap(header($d; $stalec; "Unavailable") + "\n\n" + ($d.error.message // "No usage data" | esc))}
+     popup: wrap(header("No usage data") + "\n\n" + $hint)}
   else
-    (($ws | map(select(.id == "session")) | first) // $ws[0]) as $s
-    | ($d.updated_at | fromdate | localtime | strftime("%H:%M")) as $upd
-    | (if $d.stale == true
-       then "Stale data" + (if $d.last_error.message then ": \($d.last_error.message)" else "" end)
-       else "Updated \($upd)" end) as $status
-    | {face: face($s.used_pct; $s.elapsed_pct; ($pal[$s.state] // $pal.low // $ok); "\($s.used_pct)%"),
-       popup: wrap(header($d; (if $d.stale == true then $stalec else $ok end); $status)
-         + "\n\n" + ($ws | map(section($pal)) | join("\n\n")))}
+    (($ws | map(select(.id == "session")) | first)) as $s
+    | {face: (if $s == null then face(null; null; null; "--%") else face($s.used; $s.elapsed; color($s.used); "\($s.used)%") end),
+       popup: wrap(header("Updated " + updated($d.saved_at))
+         + "\n\n" + ($ws | map(section) | join("\n\n")))}
   end
 ' 2>/dev/null)
 

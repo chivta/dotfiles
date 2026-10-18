@@ -85,7 +85,7 @@
     "image#claude": {
         "exec": "~/.config/waybar/claude-usage.sh",
         "size": 36,
-        "interval": 300,
+        "interval": 60,
         "tooltip": false,
         "on-click": "~/.config/waybar/claude-popup.py"
     },

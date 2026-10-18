@@ -12,7 +12,9 @@ gi.require_version("GtkLayerShell", "0.1")
 from gi.repository import Gdk, Gio, Gtk, GtkLayerShell
 
 APP_ID = "dev.arvlas.ClaudePopup"
-MARKUP_PATH = os.path.join(os.environ.get("XDG_RUNTIME_DIR", "/tmp"), "claude-usage", "popup.markup")
+MARKUP_PATH = os.path.join(
+    os.environ.get("XDG_CACHE_HOME", os.path.expanduser("~/.cache")), "claude-usage", "popup.markup"
+)
 BAR_HEIGHT = 28
 GAP_BELOW_BAR = 4
 CSS = b"""
