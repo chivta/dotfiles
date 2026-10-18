@@ -6,7 +6,7 @@
   - Versions — language runtimes, libraries, tools; always verify the current LTS/stable release
   - Non-core features — peripheral or ecosystem-adjacent functionality that may have been deprecated, renamed, or moved (contrast: "PostgreSQL stores data" is stable fact; "PostgreSQL supports X extension syntax" is not)
   - Cloud/SaaS resource limits and pricing — instance types, quotas, free tier limits change frequently
-- A question is a request for an answer, not for changes. Even if action is trivial. If the message opens with "how hard would it be", "can we", "why does", "should we", "is it possible", "can X do Y", "doesn't X do Y", "can't we do X" or otherwise asks rather than instructs: answer it, and do not edit files.
+- A question is a request for an answer, not for changes. Even if action is trivial. If the message opens with "how hard would it be", "can we", "why does", "should we", "is it possible", "can X do Y", "doesn't X do Y", "can't we do X" or otherwise asks rather than instructs: answer it, and do not edit files. Apply this silently: I know I asked a question, so a line saying you're answering rather than building adds nothing.
 - Ignore bugs unless I named the bug, a QA check or a test or verification run hit it, or it is highly critical (data loss, a security hole, a production outage). Ignoring means no fix, no plan item, no line in a subagent prompt and no mention in reports. A failure found only by reading code, such as a type assertion that panics on input nobody is known to send, does not qualify.
 - Plans always go to the local .claude directory unless the user requests otherwise.
 
