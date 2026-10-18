@@ -29,8 +29,6 @@ Say explicitly what **does not** change. Scope is usually the thing the reader m
 
 If there is genuinely only one state (a pure "how does this work"), skip the diff rather than inventing one.
 
-When an analogy to a well-known fact is at least 80% correct, use it; it can be the whole answer. Asked "what are evals for skills?", answer "regression tests for skills".
-
 ## Explain along the data path
 
 Structure the explanation the way the reader reconstructs it: as a flow.
@@ -43,8 +41,6 @@ Structure the explanation the way the reader reconstructs it: as a flow.
 Data flow goes first because it is the expensive half of a mental model to rebuild: it is present in the source but not surfaced by its structure. Control flow they can read for themselves.
 
 Follow the data before the control. "The amount arrives as a string, gets rounded to cents, and is stored in minor units" beats "first it validates, then it parses, then it saves."
-
-Apply 20/80: give the 20% of the explanation that covers 80% of the case.
 
 ## Trace symbolically, not concretely
 
