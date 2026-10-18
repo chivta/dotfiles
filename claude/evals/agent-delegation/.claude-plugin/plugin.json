@@ -1,0 +1,5 @@
+{
+  "name": "agent-delegation",
+  "version": "0.1.0",
+  "description": "Eval harness for the agent-delegation skill. The skill itself is copied in by run.sh."
+}
