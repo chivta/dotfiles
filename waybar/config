@@ -6,7 +6,7 @@
 
     "modules-left": ["hyprland/workspaces"],
     "modules-center": ["clock"],
-    "modules-right": ["custom/claude", "wireplumber", "custom/wireguard", "hyprland/language", "tray", "custom/swaync"],
+    "modules-right": ["group/claude", "wireplumber", "custom/wireguard", "hyprland/language", "tray", "custom/swaync"],
 	
 
     "hyprland/workspaces": {
@@ -82,7 +82,20 @@
     //     "on-click": "/home/arvlas/.local/bin/wg-toggle"
     // },
 
-    "custom/claude": {
+    "group/claude": {
+        "orientation": "vertical",
+        "modules": ["custom/claude-gauge", "custom/claude-pct"]
+    },
+
+    "custom/claude-gauge": {
+        "exec": "~/.config/waybar/claude-usage.sh gauge",
+        "return-type": "json",
+        "interval": 300,
+        "justify": "center",
+        "on-click": "xdg-open https://claude.ai/settings/usage"
+    },
+
+    "custom/claude-pct": {
         "exec": "~/.config/waybar/claude-usage.sh",
         "return-type": "json",
         "interval": 300,

@@ -5,10 +5,9 @@ FONT='Noto Sans Mono'
 TOOLTIP_COLS=32
 TOOLTIP_SIZE=10000
 FACE_GAUGE_COLS=12
-FACE_GAUGE_SIZE=3000      # pango size units (1/1024 pt)
-FACE_TEXT_SIZE=small
-FACE_FILL='#eeeeee'
-FACE_TRACK='#555555'
+FACE_GAUGE_SIZE=3750      # pango size units (1/1024 pt); 0.6 em col = 3 px
+FACE_FILL='#ffffff'
+FACE_MIN_COLS=1
 COLOR_DIM='#8e8e93'
 COLOR_TRACK='#3a3a3c'
 COLOR_TICK='#32d4e6'
@@ -21,12 +20,14 @@ BAR_GAP_SIZE=2000
 RULE_GLYPH='─'
 HEADER_SIZE=large
 
+FACE=${1:-pct}
+
 raw=$(claudebar --json 2>/dev/null)
 
 jq -c --argjson raw "$(jq -c . <<<"$raw" 2>/dev/null || echo null)" -n \
   --arg font "$FONT" --arg tsz "$TOOLTIP_SIZE" --argjson cols "$TOOLTIP_COLS" \
-  --argjson gcols "$FACE_GAUGE_COLS" --arg gsize "$FACE_GAUGE_SIZE" --arg tsize "$FACE_TEXT_SIZE" \
-  --arg ffill "$FACE_FILL" --arg ftrack "$FACE_TRACK" \
+  --argjson gcols "$FACE_GAUGE_COLS" --arg gsize "$FACE_GAUGE_SIZE" --argjson mincols "$FACE_MIN_COLS" --arg face "$FACE" \
+  --arg ffill "$FACE_FILL" \
   --arg dim "$COLOR_DIM" --arg track "$COLOR_TRACK" --arg tick "$COLOR_TICK" --arg badgebg "$COLOR_BADGE_BG" \
   --arg ok "$COLOR_OK" --arg stalec "$COLOR_STALE" \
   --argjson sph "$SECONDS_PER_HOUR" --arg lh "$BAR_LINE_HEIGHT" --arg gapsize "$BAR_GAP_SIZE" \
@@ -38,11 +39,11 @@ def clamp($lo; $hi): if . < $lo then $lo elif . > $hi then $hi else . end;
 def dimspan($t): span("foreground=\"\($dim)\""; $t | esc);
 
 def face($pct; $text):
-  ($pct // 0 | clamp(0; 100)) as $p
-  | (($p * $gcols / 100) | round) as $n
-  | span("font_family=\"\($font)\" size=\"\($gsize)\" bgcolor=\"\($ffill)\""; rep(" "; $n))
-    + span("font_family=\"\($font)\" size=\"\($gsize)\" bgcolor=\"\($ftrack)\""; rep(" "; $gcols - $n))
-    + "\n" + span("size=\"\($tsize)\""; $text);
+  if $face == "gauge" then
+    (($pct // 0 | clamp(0; 100)) * $gcols / 100 | round | if . < $mincols then $mincols else . end) as $n
+    | span("font_family=\"\($font)\" size=\"\($gsize)\" bgcolor=\"\($ffill)\""; rep(" "; $n))
+      + span("font_family=\"\($font)\" size=\"\($gsize)\""; rep(" "; $gcols - $n))
+  else $text end;
 
 def bar($pct; $elapsed; $color):
   (($pct | clamp(0; 100)) * $cols / 100 | round) as $fill
