@@ -1,13 +1,24 @@
 #!/usr/bin/env bash
-# Waybar module: Claude usage from `claudebar --json` (one call, always exits 0 with valid JSON).
+# Waybar image module: draws the Claude usage face from `claudebar --json` and saves the popup markup for claude-popup.py.
 
 FONT='Noto Sans Mono'
-TOOLTIP_COLS=32
-TOOLTIP_SIZE=10000
-FACE_GAUGE_COLS=12
-FACE_GAUGE_SIZE=3750      # pango size units (1/1024 pt); 0.6 em col = 3 px
-FACE_FILL='#ffffff'
-FACE_MIN_COLS=1
+POPUP_COLS=32
+POPUP_SIZE=10000
+SVG_W=36
+SVG_H=28
+GAUGE_X=1
+GAUGE_Y=5
+GAUGE_W=34
+GAUGE_H=9
+GAUGE_RADIUS=3
+GAUGE_INSET=2
+FILL_MIN_W=3
+MARKER_W=1.5
+LABEL_Y=25
+LABEL_SIZE=10
+LABEL_FONT='Noto Sans'
+COLOR_LABEL='#eeeeee'
+COLOR_OUTLINE='#8e8e93'
 COLOR_DIM='#8e8e93'
 COLOR_TRACK='#3a3a3c'
 COLOR_TICK='#32d4e6'
@@ -20,14 +31,15 @@ BAR_GAP_SIZE=2000
 RULE_GLYPH='─'
 HEADER_SIZE=large
 
-FACE=${1:-pct}
+OUT_DIR=${XDG_RUNTIME_DIR:-/tmp}/claude-usage
+mkdir -p "$OUT_DIR"
 
 raw=$(claudebar --json 2>/dev/null)
 
-jq -c --argjson raw "$(jq -c . <<<"$raw" 2>/dev/null || echo null)" -n \
-  --arg font "$FONT" --arg tsz "$TOOLTIP_SIZE" --argjson cols "$TOOLTIP_COLS" \
-  --argjson gcols "$FACE_GAUGE_COLS" --arg gsize "$FACE_GAUGE_SIZE" --argjson mincols "$FACE_MIN_COLS" --arg face "$FACE" \
-  --arg ffill "$FACE_FILL" \
+result=$(jq -c --argjson raw "$(jq -c . <<<"$raw" 2>/dev/null || echo null)" -n \
+  --arg font "$FONT" --arg tsz "$POPUP_SIZE" --argjson cols "$POPUP_COLS" \
+  --argjson g "{\"w\":$SVG_W,\"h\":$SVG_H,\"x\":$GAUGE_X,\"y\":$GAUGE_Y,\"gw\":$GAUGE_W,\"gh\":$GAUGE_H,\"r\":$GAUGE_RADIUS,\"inset\":$GAUGE_INSET,\"minw\":$FILL_MIN_W,\"mw\":$MARKER_W,\"ly\":$LABEL_Y,\"ls\":$LABEL_SIZE}" \
+  --arg lfont "$LABEL_FONT" --arg clabel "$COLOR_LABEL" --arg coutline "$COLOR_OUTLINE" \
   --arg dim "$COLOR_DIM" --arg track "$COLOR_TRACK" --arg tick "$COLOR_TICK" --arg badgebg "$COLOR_BADGE_BG" \
   --arg ok "$COLOR_OK" --arg stalec "$COLOR_STALE" \
   --argjson sph "$SECONDS_PER_HOUR" --arg lh "$BAR_LINE_HEIGHT" --arg gapsize "$BAR_GAP_SIZE" \
@@ -38,12 +50,17 @@ def span($attrs; $t): "<span \($attrs)>\($t)</span>";
 def clamp($lo; $hi): if . < $lo then $lo elif . > $hi then $hi else . end;
 def dimspan($t): span("foreground=\"\($dim)\""; $t | esc);
 
-def face($pct; $text):
-  if $face == "gauge" then
-    (($pct // 0 | clamp(0; 100)) * $gcols / 100 | round | if . < $mincols then $mincols else . end) as $n
-    | span("font_family=\"\($font)\" size=\"\($gsize)\" bgcolor=\"\($ffill)\""; rep(" "; $n))
-      + span("font_family=\"\($font)\" size=\"\($gsize)\""; rep(" "; $gcols - $n))
-  else $text end;
+def face($pct; $elapsed; $color; $label):
+  ($g.x + $g.inset) as $ix | ($g.gw - 2 * $g.inset) as $iw
+  | ($g.y + $g.inset) as $iy | ($g.gh - 2 * $g.inset) as $ih
+  | (if $pct == null then 0 else [($pct | clamp(0; 100)) * $iw / 100, $g.minw] | max end) as $fw
+  | "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"\($g.w)\" height=\"\($g.h)\" viewBox=\"0 0 \($g.w) \($g.h)\">"
+    + "<rect x=\"\($g.x + 0.5)\" y=\"\($g.y + 0.5)\" width=\"\($g.gw - 1)\" height=\"\($g.gh - 1)\" rx=\"\($g.r)\" fill=\"none\" stroke=\"\($coutline)\"/>"
+    + (if $pct == null then "" else "<rect x=\"\($ix)\" y=\"\($iy)\" width=\"\($fw)\" height=\"\($ih)\" rx=\"\([$ih / 2, $fw / 2] | min)\" fill=\"\($color)\"/>" end)
+    + (if $elapsed == null then "" else
+        ($ix + ($elapsed | clamp(0; 100)) * $iw / 100) as $mx
+        | "<rect x=\"\($mx - $g.mw / 2)\" y=\"\($g.y)\" width=\"\($g.mw)\" height=\"\($g.gh)\" fill=\"\($tick)\"/>" end)
+    + "<text x=\"\($g.w / 2)\" y=\"\($g.ly)\" text-anchor=\"middle\" font-family=\"\($lfont)\" font-size=\"\($g.ls)\" fill=\"\($clabel)\">\($label)</text></svg>";
 
 def bar($pct; $elapsed; $color):
   (($pct | clamp(0; 100)) * $cols / 100 | round) as $fill
@@ -94,20 +111,26 @@ def wrap($t): span("font_family=\"\($font)\" size=\"\($tsz)\""; $t);
 | ($d.palette // {}) as $pal
 | ($d.windows // []) as $ws
 | if $d.loading == true then
-    {text: face(0; "…"), class: "loading",
-     tooltip: wrap(header($d; $stalec; "Loading…") + "\n\nLoading…")}
+    {face: face(null; null; null; "…"),
+     popup: wrap(header($d; $stalec; "Loading…") + "\n\nLoading…")}
   elif $d.error != null or ($ws | length) == 0 then
-    {text: face(0; "--%"), class: "error",
-     tooltip: wrap(header($d; $stalec; "Unavailable") + "\n\n" + ($d.error.message // "No usage data" | esc))}
+    {face: face(null; null; null; "--%"),
+     popup: wrap(header($d; $stalec; "Unavailable") + "\n\n" + ($d.error.message // "No usage data" | esc))}
   else
     (($ws | map(select(.id == "session")) | first) // $ws[0]) as $s
     | ($d.updated_at | fromdate | localtime | strftime("%H:%M")) as $upd
     | (if $d.stale == true
        then "Stale data" + (if $d.last_error.message then ": \($d.last_error.message)" else "" end)
        else "Updated \($upd)" end) as $status
-    | {text: face($s.used_pct; "\($s.used_pct)%"), class: ($d.state // "low"),
-       tooltip: wrap(header($d; (if $d.stale == true then $stalec else $ok end); $status)
+    | {face: face($s.used_pct; $s.elapsed_pct; ($pal[$s.state] // $pal.low // $ok); "\($s.used_pct)%"),
+       popup: wrap(header($d; (if $d.stale == true then $stalec else $ok end); $status)
          + "\n\n" + ($ws | map(section($pal)) | join("\n\n")))}
   end
-' 2>/dev/null || echo '{"text":"--%","tooltip":"claude-usage failed","class":"error"}'
+' 2>/dev/null)
+
+if [ -n "$result" ]; then
+    jq -r .face <<<"$result" >"$OUT_DIR/face.svg"
+    jq -r .popup <<<"$result" >"$OUT_DIR/popup.markup"
+fi
+echo "$OUT_DIR/face.svg"
 exit 0
