@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 The cluster runs k3s and is driven entirely by Flux from `github.com/chivta/homelab`. A deploy means: the app repo carries its own manifests under `k8s/`, CI/CD pushes images to GHCR and pins the tag back into those manifests, and the homelab repo points Flux at the app repo.
 
-Work in this order. The gate before section 4 is hard: do not open the homelab repo until everything above it is done and pushed.
+Work in this order, and don't open the homelab repo until the gate before section 4 is met. Once homelab points Flux at the app repo, Flux applies `k8s/` as it stands, so a `placeholder` image or a missing secret goes live as a broken deployment.
 
 ## Access
 
@@ -88,8 +88,6 @@ spec:
     - host: <app>.chivtar.dev
 ```
 
-Wildcard TLS is already issued, so no `tls:` block and no cert-manager. The DNS record for the host is a human step, see the gate.
-
 The image tag in the manifest is the ground truth for what runs. Commit it with a real SHA or a `placeholder` tag that CD overwrites on the first run.
 
 ## 2. Secrets
@@ -134,7 +132,7 @@ on:
 
 - Guard with `if: ${{ github.event.workflow_run.conclusion == 'success' }}`.
 - `permissions: contents: write, packages: write`.
-- Log in to `ghcr.io` with `secrets.GITHUB_TOKEN` and `github.actor`.
+- Log in to `ghcr.io` with `secrets.GITHUB_TOKEN` and `github.actor`, and push to `ghcr.io/chivta/<repo>`, or `ghcr.io/chivta/<repo>/<component>` in a monorepo.
 - Tag images with the full `github.event.workflow_run.head_sha`, plus `latest`.
 - Build the `production` target of the Dockerfile with `cache-from`/`cache-to: type=gha`, with a separate `scope` per image in a monorepo.
 - Commit the manifest change as `deploy: <what> <sha>` from `github-actions[bot]`.
@@ -144,18 +142,13 @@ Pin the tag according to how many images the repo ships:
 - One image: `sed -i -E "s|image: ${REGISTRY}/${IMAGE_NAME}:.*|image: ${IMAGE}|"` on the deployment file, then `git diff --quiet && exit 0` so a no-op run does not commit.
 - Several images: list every image in an `images:` block in `k8s/kustomization.yaml` (`name` plus `newTag`), and run `kustomize edit set image <name>=<name>:<sha>` for each image that was built.
 
-Stop the deploy commit from looping back into CI with a head-SHA guard: check out `main` (not the detached SHA, so the commit has a branch to land on) and fail the job if `git rev-parse HEAD` differs from `github.event.workflow_run.head_sha`. The guard also stops a stale run from overwriting a newer deploy. Adding the pinned file to CI's `paths-ignore` stops the loop too, but misses the race, so it does not replace the guard.
+Check out `main`, not the detached SHA, so the deploy commit has a branch to land on, and fail the job if `git rev-parse HEAD` differs from `github.event.workflow_run.head_sha`. Without this guard a stale run overwrites a newer deploy. The deploy commit is pushed with `GITHUB_TOKEN`, and pushes made with it start no workflow runs, so it can't loop back into CI.
 
 In a monorepo, build only the components that changed. Read each image's current `newTag` from `kustomization.yaml` and `git diff --name-only <old> <new>` against that component's directory, setting one step output per component. A missing tag, or one equal to the new SHA, forces a build. CD needs `fetch-depth: 0` for that diff. Skip the deploy job when nothing was built.
 
 ## Gate before touching homelab
 
-All of these must be true and pushed to the app repo's `main`:
-
-- [ ] `k8s/` manifests complete: namespace, root kustomization listing every resource, workloads with probes, resources, and security contexts.
-- [ ] `k8s/secrets.enc.yaml` committed, `k8s/secrets.yaml` gitignored, `.sops.yaml` present with the shared app recipient, and the encrypted file re-generated from the current plaintext.
-- [ ] `.github/workflows/ci.yaml` and `cd.yaml` present, CD gated on CI, images pushed to `ghcr.io/chivta/<repo>[/<component>]`, tag pinned back into the manifest with a `deploy:` commit.
-- [ ] At least one green CD run (`gh run list --repo chivta/<repo> --workflow CD`), so the manifest holds a real SHA rather than `placeholder`.
+Sections 1–3 are pushed to the app repo's `main`, and at least one CD run is green (`gh run list --repo chivta/<repo> --workflow CD`), so the manifest holds a real SHA rather than `placeholder`.
 
 Human steps you cannot do yourself. Stop and ask:
 
@@ -217,4 +210,4 @@ Commit to homelab as `feat: deploy <app>` and push.
 
 ## 5. Verify
 
-Confirm Flux applied the app with the `read-cluster` skill. Every failure is fixed by a commit to the app repo or to homelab.
+Confirm Flux applied the app with the `read-cluster` skill.
