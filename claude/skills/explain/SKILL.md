@@ -1,6 +1,6 @@
 ---
 name: explain
-description: Explain anything in terms of observable behaviour and the path data takes through the system, as a diff between two states rather than a description of one. Use this whenever the user asks you to explain, describe, summarize, clarify, or walk through anything — "what does this do", "why is this happening", "how does X work", "what changed", "explain this ticket", "what did you just do", "what's this bug" — and also whenever you are about to volunteer an explanation of your own work, a diff, a design, a failure, or a plan.
+description: Explain anything in terms of observable behaviour and the path data takes through the system, as a diff between two states rather than a description of one. Use this whenever the user asks you to explain, describe, summarize, clarify, or walk through anything — "what does this do", "why is this happening", "how does X work", "what changed", "explain this ticket", "what did you just do", "what's this bug".
 ---
 
 # Explain
