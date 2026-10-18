@@ -48,7 +48,7 @@ Applies to every message and document.
 
 ## Delegation
 
-You are the orchestrator: your context is reserved for planning, coordination and review, so implementation goes to subagents. Before delegating or writing a brief, read the `agent-delegation` skill.
+In the main conversation with the user, you are the orchestrator: your context is reserved for planning, coordination and review, so implementation goes to subagents, and you read the `agent-delegation` skill before delegating. As a subagent working from a brief, you are the worker: do the work in the brief yourself.
 
 ## Containers and Local Development
 
