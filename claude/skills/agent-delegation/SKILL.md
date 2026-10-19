@@ -13,13 +13,21 @@ This applies to the main conversation; a subagent working from a brief does the 
 
 Delegate work that spans more than one file or one pass. Work inline when you can finish in a handful of tool calls. Keep scoping, brief writing and the review of every returned diff yourself, and never use a subagent to re-check your own work.
 
-| model    | use for                                                                                                      |
-| -------- | ------------------------------------------------------------------------------------------------------------ |
-| `haiku`  | Wrappers that run one command and return its output; mechanical lookups.                                     |
-| `sonnet` | The default worker: implementation, refactors, migrations, tests, review passes, analysis, large file reads. |
-| `opus`   | Orchestration, planning, architecture, and work the others failed at.                                        |
+Models come in two tiers, `cheap` and `expensive`; take the exact names from the column whose models your spawn tool offers:
 
-Anything a user sees or a developer reads as an interface (UI, copy, error strings, API signatures) goes to `sonnet` or above. Escalate without asking; cost only breaks ties.
+| tier        | Claude Code                           | Codex         |
+| ----------- | ------------------------------------- | ------------- |
+| `cheap`     | `sonnet`; `haiku` for mechanical work | `gpt-6-luna`  |
+| `expensive` | `opus`                                | `gpt-6.1-sol` |
+
+| work                                                                                | tier        | effort                           |
+| ----------------------------------------------------------------------------------- | ----------- | -------------------------------- |
+| Mechanical work: wrappers that run one command and return its output; lookups.      | `cheap`     | `low`                            |
+| The default worker: implementation, refactors, migrations, tests, large file reads. | `cheap`     | `medium`; `high` on `gpt-6-luna` |
+| Review passes and analysis, where edge cases decide the result.                     | `cheap`     | `high`                           |
+| Orchestration, planning, architecture, and work a `cheap` worker failed at.         | `expensive` | `high`                           |
+
+Pass the row's model and effort on every spawn; an omitted effort falls back to the session or model default. Anything a user sees or a developer reads as an interface (UI, copy, error strings, API signatures) is never mechanical work. Escalate without asking; cost only breaks ties.
 
 ## Writing for agents
 
@@ -55,7 +63,7 @@ Name a wrong path only when it's already in play without you: the agent would re
 
 ## Plans
 
-Resolve every blocker before writing a plan: anything the executing agent can't settle by reading the repo, such as an unclear requirement or a decision that belongs to the user. Ask, wait, then write. For a plan run by several agents, each piece names its owner model, the files it owns (no file in two pieces), what it waits for, and what it returns. The plan is done when each agent can run its piece without asking anyone anything.
+Resolve every blocker before writing a plan: anything the executing agent can't settle by reading the repo, such as an unclear requirement or a decision that belongs to the user. Ask, wait, then write. For a plan run by several agents, each piece names its owner tier and effort, the files it owns (no file in two pieces), what it waits for, and what it returns. The plan is done when each agent can run its piece without asking anyone anything.
 
 ## Running workers
 
@@ -74,6 +82,6 @@ Keep each meaning in one place. Don't restate what the agent can read from confi
 Known no-ops on Opus 5.5 and Sonnet 5.5 (checked October 2026; re-check on each new model):
 
 - Instructions to think carefully or reason before answering; effort controls thinking.
-- Instructions to double-check or add a verification step to your own work; they cause over-verification. Workers on `haiku` or `sonnet` are the exception, which is why the brief block carries a check paragraph.
+- Instructions to double-check or add a verification step to your own work; they cause over-verification. Workers on the `cheap` tier are the exception, which is why the brief block carries a check paragraph.
 - Pushes such as "be thorough" or "if in doubt, use X".
 - Instructions to write out reasoning in the response; these can be declined outright.
