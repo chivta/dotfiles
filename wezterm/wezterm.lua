@@ -25,6 +25,7 @@ local OS_LAYERS = {
 local TAB_SHORTCUT_COUNT = 10
 local DETACH_TAB = "tab"
 local DETACH_WINDOW = "window"
+local MUX_DOMAIN = "unix"
 -- ESC b / ESC f: readline's word back / forward
 local WORD_BACK = "\x1b\x62"
 local WORD_FORWARD = "\x1b\x66"
@@ -81,6 +82,11 @@ config.enable_kitty_keyboard = true
 -- idle shell prompts don't count (skip_close_confirmation_for_processes_named
 -- lists the shells). Same as WezTerm's current default, pinned here.
 config.window_close_confirmation = "AlwaysPrompt"
+
+-- tmux-style persistence: every launch attaches to a local wezterm-mux-server
+-- (spawned on first connect), so tabs and panes outlive quitting the GUI.
+config.unix_domains = { { name = MUX_DOMAIN } }
+config.default_gui_startup_args = { "connect", MUX_DOMAIN }
 
 -- --- tabs --------------------------------------------------------------------
 -- Only the first format-tab-title handler runs, so bell and prevtab share this
