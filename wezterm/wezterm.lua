@@ -26,6 +26,7 @@ local TAB_SHORTCUT_COUNT = 10
 local DETACH_TAB = "tab"
 local DETACH_WINDOW = "window"
 local MUX_DOMAIN = "unix"
+local ATTACH_DOMAIN_VAR = "attach_domain"
 -- ESC b / ESC f: readline's word back / forward
 local WORD_BACK = "\x1b\x62"
 local WORD_FORWARD = "\x1b\x66"
@@ -87,6 +88,15 @@ config.window_close_confirmation = "AlwaysPrompt"
 -- (spawned on first connect), so tabs and panes outlive quitting the GUI.
 config.unix_domains = { { name = MUX_DOMAIN } }
 config.default_gui_startup_args = { "connect", MUX_DOMAIN }
+
+-- A shell sets the attach_domain user var to a domain name (zsh's `arch`
+-- alias) to open that domain's windows in this GUI. `wezterm connect` would
+-- start a second app instance instead, which cmd+` doesn't cycle into.
+wezterm.on("user-var-changed", function(window, pane, name, value)
+  if name == ATTACH_DOMAIN_VAR then
+    window:perform_action(act.AttachDomain(value), pane)
+  end
+end)
 
 -- --- tabs --------------------------------------------------------------------
 -- Only the first format-tab-title handler runs, so bell and prevtab share this
