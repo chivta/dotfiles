@@ -19,6 +19,7 @@
 - Never touch production, live databases, remote servers. If a task requires remote access or production data, stop immediately and ask for instructions.
 - Input validated at system boundaries only (HTTP handlers, queue consumers). Internal functions trust their callers.
 - Prefer named constants over hardcoded values. A magic number or string used even once should be a constant — it makes the intent visible, shows every place the value is used, and makes changes trivial.
+- API should be designed as simple and as universal as possible. Avoid special cases, exceptions, and workarounds. Prefer universal abstract endpoints coupling multiple business needs behind common interface.
 
 ## Common abbreviation
 
