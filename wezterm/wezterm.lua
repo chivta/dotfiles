@@ -92,9 +92,16 @@ config.default_gui_startup_args = { "connect", MUX_DOMAIN }
 -- A shell sets the attach_domain user var to a domain name (zsh's `arch`
 -- alias) to open that domain's windows in this GUI. `wezterm connect` would
 -- start a second app instance instead, which cmd+` doesn't cycle into.
-wezterm.on("user-var-changed", function(window, pane, name, value)
-  if name == ATTACH_DOMAIN_VAR then
-    window:perform_action(act.AttachDomain(value), pane)
+-- domain:attach() gives every remote window its own GUI window; the
+-- AttachDomain action would merge the first one's tabs into the current window.
+wezterm.on("user-var-changed", function(_, _, name, value)
+  if name ~= ATTACH_DOMAIN_VAR then
+    return
+  end
+  local domain = wezterm.mux.get_domain(value)
+  domain:attach()
+  if not domain:has_any_panes() then
+    wezterm.mux.spawn_window({ domain = { DomainName = value } })
   end
 end)
 
