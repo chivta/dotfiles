@@ -44,8 +44,8 @@ fi
 
 alias update='brew update && brew upgrade'
 # Opens Arch's WezTerm session as windows of this WezTerm (see attach_domain in
-# wezterm.lua). Shadows /usr/bin/arch; call that as `command arch`.
-alias arch='printf "\033]1337;SetUserVar=attach_domain=%s\007" "$(printf %s SSHMUX:arch | base64)"'
+# wezterm.lua).
+alias wezarch='printf "\033]1337;SetUserVar=attach_domain=%s\007" "$(printf %s SSHMUX:arch | base64)"'
 
 # --- ZSH HISTORY SETTINGS ---
 HISTSIZE=1000

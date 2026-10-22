@@ -89,7 +89,7 @@ config.window_close_confirmation = "AlwaysPrompt"
 config.unix_domains = { { name = MUX_DOMAIN } }
 config.default_gui_startup_args = { "connect", MUX_DOMAIN }
 
--- A shell sets the attach_domain user var to a domain name (zsh's `arch`
+-- A shell sets the attach_domain user var to a domain name (zsh's `wezarch`
 -- alias) to open that domain's windows in this GUI. `wezterm connect` would
 -- start a second app instance instead, which cmd+` doesn't cycle into.
 -- domain:attach() gives every remote window its own GUI window; the
