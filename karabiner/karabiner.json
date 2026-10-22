@@ -34,14 +34,15 @@
                         ]
                     },
                     {
-                        "description": "Cmd+Q → Ctrl+Q in Brave and Kitty",
+                        "description": "Cmd+Q → Ctrl+Q in Brave, Kitty and WezTerm",
                         "manipulators": [
                             {
                                 "conditions": [
                                     {
                                         "bundle_identifiers": [
                                             "com.brave.Browser",
-                                            "net.kovidgoyal.kitty"
+                                            "net.kovidgoyal.kitty",
+                                            "com.github.wez.wezterm"
                                         ],
                                         "type": "frontmost_application_if"
                                     }
@@ -85,13 +86,14 @@
                         ]
                     },
                     {
-                        "description": "Disable Cmd+Q (except in Kitty)",
+                        "description": "Disable Cmd+Q (except in Kitty and WezTerm)",
                         "manipulators": [
                             {
                                 "conditions": [
                                     {
                                         "bundle_identifiers": [
-                                            "net.kovidgoyal.kitty"
+                                            "net.kovidgoyal.kitty",
+                                            "com.github.wez.wezterm"
                                         ],
                                         "type": "frontmost_application_unless"
                                     }
