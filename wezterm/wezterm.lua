@@ -114,8 +114,12 @@ bind(layer.MOD, "phys:Q", prevtab.previous)
 
 -- --- splits and panes --------------------------------------------------------
 bind(layer.MOD, "phys:D", act.SplitHorizontal({ domain = "CurrentPaneDomain" }))
--- confirm=true still skips the prompt when the pane just sits at a shell prompt
-bind(layer.MOD, "phys:W", act.CloseCurrentPane({ confirm = true }))
+-- confirm=true still skips the prompt when the pane just sits at a shell prompt.
+-- WezTerm's default MOD+w (CloseCurrentTab) is bound on the mapped key and
+-- fires instead of phys:W, so the mapped key is overridden too.
+local close_pane = act.CloseCurrentPane({ confirm = true })
+bind(layer.MOD, "phys:W", close_pane)
+bind(layer.MOD, "w", close_pane)
 bind(layer.MOD_SHIFT, "RightArrow", act.ActivatePaneDirection("Next"))
 bind(layer.MOD_SHIFT, "LeftArrow", act.ActivatePaneDirection("Prev"))
 -- kitty's layout_action rotate (flip a split between horizontal and vertical)
