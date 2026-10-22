@@ -44,7 +44,8 @@ hl.monitor({
 --## MY PROGRAMS ###
 --##################
 
-local terminal    = "kitty"
+local terminal      = "wezterm"
+local terminalClass = "^org\\.wezfurlong\\.wezterm$"
 local fileManager = "dolphin"
 local menu        = "fuzzel"
 
@@ -58,7 +59,7 @@ local menu        = "fuzzel"
 
 hl.on("hyprland.start", function ()
   hl.exec_cmd("hyprctl setcursor teto 48")
-  hl.exec_cmd("kitty & hyprpaper & waybar & hypridle")
+  hl.exec_cmd(terminal .. " & hyprpaper & waybar & hypridle")
   hl.exec_cmd("exec-once=dbus-update-activation-environment --systemd --all WAYLAND_DISPLAY XDG_CURRENT_DESKTOP HYPRLAND_INSTANCE_SIGNATURE")
   hl.exec_cmd("exec-once = systemctl --user start graphical-session-pre.target")
   hl.exec_cmd("exec-once = systemctl --user start graphical-session.target")
@@ -98,15 +99,15 @@ hl.workspace_rule({ workspace = "7", monitor = SIDE_MONITOR })
 hl.workspace_rule({ workspace = "8", monitor = SIDE_MONITOR })
 hl.workspace_rule({ workspace = "9", monitor = SIDE_MONITOR })
 
--- kitty: workspace 1
+-- terminal: workspace 1
 hl.window_rule({
-    match = { class = "^kitty$" },
+    match = { class = terminalClass },
     workspace = "1",
 })
 
--- kitty: opacity
+-- terminal: opacity
 hl.window_rule({
-    match = { class = "^kitty$" },
+    match = { class = terminalClass },
     opacity = "0.85 0.85",
 })
 
