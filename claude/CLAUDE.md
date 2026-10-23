@@ -58,6 +58,8 @@ In the main conversation with the user, you are the orchestrator: your context i
 
 `docker-compose` is for local development only. It is usually not used for deployment.
 
+- Always bind user-facing local development servers, including Docker-published host ports, to `10.10.0.2` and provide matching `http://10.10.0.2:<port>` URLs rather than localhost because I develop over SSH; keep databases, internal services, and isolated automated tests private, including backend-only test dependencies.
+
 Every service's Dockerfile has distinct named stages:
 
 - **Dev stage**: minimal base image. Runs with a hot-reload tool appropriate to the language/framework. Source code is bind-mounted; the image does not need to be rebuilt on code changes.
