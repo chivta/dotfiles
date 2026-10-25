@@ -10,5 +10,8 @@ claude/skills/synced/
 claude/skills/.trash/
 claude/skills/.system/
 
+# fish writes universal variables here at runtime
+fish/fish_variables
+
 .DS_Store
 zsh/.zcompdump

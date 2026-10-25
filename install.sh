@@ -43,6 +43,7 @@ case "$(uname -s)" in
   Linux)
     link bash/.bashrc "$HOME/.bashrc"
     link bash/.bash_profile "$HOME/.bash_profile"
+    link fish "$HOME/.config/fish"
     link hypr "$HOME/.config/hypr"
     link waybar "$HOME/.config/waybar"
     link wezterm/org.wezfurlong.wezterm.desktop "$HOME/.local/share/applications/org.wezfurlong.wezterm.desktop"

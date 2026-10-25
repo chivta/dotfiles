@@ -1,6 +1,8 @@
 # Interactive setup shared by zsh (macOS) and bash (Arch), sourced from
 # .zshrc / .bashrc after their interactive-shell guard. Shell-specific bits
 # (keybinds, prompt, history, ls flags) stay in those files.
+# fish sources only the `alias` lines of this file, so shared aliases must stay
+# one-line `alias name='...'` definitions.
 
 # --- ALIASES ---
 alias claude2='CLAUDE_CONFIG_DIR="$HOME/.claude2" claude'
