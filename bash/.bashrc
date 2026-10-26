@@ -15,9 +15,6 @@ case "$(uname -s)" in
         fi
 
         alias update='brew update && brew upgrade'
-        # Opens Arch's WezTerm session as windows of this WezTerm (see attach_domain in
-        # wezterm.lua).
-        alias wezarch='printf "\033]1337;SetUserVar=attach_domain=%s\007" "$(printf %s SSHMUX:arch | base64)"'
 
         # Added by OrbStack: command-line tools and integration
         # This won't be added again if you remove it.

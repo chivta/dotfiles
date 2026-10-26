@@ -7,7 +7,7 @@ set -eu
 DOT="$(cd "$(dirname "$0")" && pwd)"
 TPM_DIR="$HOME/.tmux/plugins/tpm"
 TPM_REPO="https://github.com/tmux-plugins/tpm"
-SHARED_CONFIGS="shell kitty wezterm nvim git tmux"
+SHARED_CONFIGS="shell kitty nvim git tmux"
 # Codex and pi read the same instructions and skills as Claude Code
 AGENT_HOMES="$HOME/.codex $HOME/.pi/agent"
 
@@ -43,7 +43,6 @@ case "$(uname -s)" in
   Linux)
     link hypr "$HOME/.config/hypr"
     link waybar "$HOME/.config/waybar"
-    link wezterm/org.wezfurlong.wezterm.desktop "$HOME/.local/share/applications/org.wezfurlong.wezterm.desktop"
     ;;
 esac
 
