@@ -2,9 +2,10 @@
 [[ $- != *i* ]] && return
 
 # --- OS-SPECIFIC ---
-# GOPATH must be exported before env.sh, which only defaults it when unset.
 case "$(uname -s)" in
     Darwin)
+        export GOPATH="$HOME/go"
+
         # macOS ships BSD ls (no --color=auto); use GNU coreutils' gls if installed
         if command -v gls >/dev/null 2>&1; then
             alias ls='gls --color=auto'
@@ -37,11 +38,64 @@ case "$(uname -s)" in
 esac
 
 # --- EXPORTS & PATHS ---
-source "$HOME/.config/shell/env.sh"
+export PATH="$HOME/.local/bin:$HOME/.local/npm/bin:$HOME/.cargo/bin:$HOME/.tfenv/bin:$GOPATH/bin:$PATH"
+export PAGER='less'
+export LESS='-RF --mouse'
+# difft is git's diff.external, and it can spend minutes on one file (a 530KB
+# generated docs.go took >60s). Past this size it uses a line-oriented diff,
+# which is what stops `git diff` appearing to hang when the pager asks for more.
+export DFT_BYTE_LIMIT=500000
+export KUBECONFIG="$HOME/.kube/config"
 
 # --- ALIASES ---
-# Shared aliases, functions, git prompt and SSH tmux attach
-source "$HOME/.config/shell/rc.sh"
+alias claude2='CLAUDE_CONFIG_DIR="$HOME/.claude2" claude'
+alias ccc2='CLAUDE_CONFIG_DIR="$HOME/.claude2" claude --continue'
+alias cc2='CLAUDE_CONFIG_DIR="$HOME/.claude2" claude'
+alias diffthing='diff --offline'
+alias c='claude'
+alias cc='claude'
+alias ccc='claude --continue'
+alias dc='docker-compose'
+alias d='docker'
+alias g='git'
+alias nv='nvim'
+alias k='kubectl'
+alias ks='kubectl'
+alias tf='terraform'
+alias grep='grep --color=auto'
+alias sudp='sudo'
+alias bc='bc -q'
+
+# git-show does not honor diff.external unless --ext-diff is passed.
+git() {
+    if [ "$1" = show ]; then
+        shift
+        command git show --ext-diff "$@"
+    else
+        command git "$@"
+    fi
+}
+
+# Navigation & Safety
+alias ..='cd ..'
+alias ...='cd ../..'
+alias cp='cp -iv'
+alias mv='mv -iv'
+alias rm='rm -vI'
+
+# --- GIT PROMPT ---
+# Provides __git_ps1. Vendored from git's contrib/completion/git-prompt.sh.
+source "$HOME/.config/bash/git-prompt.sh"
+
+# --- CUSTOM FUNCTIONS ---
+mkcd() {
+    mkdir -p "$1" && cd "$1"
+}
+
+# Auto-attach tmux on SSH login
+if [ -z "$TMUX" ] && [ -n "$SSH_TTY" ]; then
+    tmux attach-session -t main || tmux new-session -s main
+fi
 
 # --- KEYBINDS ---
 # Readline would otherwise rebind ^W to the tty's werase and ignore the bind -x below
