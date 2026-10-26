@@ -7,7 +7,7 @@ set -eu
 DOT="$(cd "$(dirname "$0")" && pwd)"
 TPM_DIR="$HOME/.tmux/plugins/tpm"
 TPM_REPO="https://github.com/tmux-plugins/tpm"
-SHARED_CONFIGS="shell kitty wezterm nvim git tmux"
+SHARED_CONFIGS="bash kitty nvim git tmux"
 # Codex and pi read the same instructions and skills as Claude Code
 AGENT_HOMES="$HOME/.codex $HOME/.pi/agent"
 
@@ -23,6 +23,8 @@ link() {
 }
 
 for d in $SHARED_CONFIGS; do link "$d" "$HOME/.config/$d"; done
+link bash/.bashrc "$HOME/.bashrc"
+link bash/.bash_profile "$HOME/.bash_profile"
 
 # Only these entries are linked, the rest of ~/.claude, ~/.codex and ~/.pi/agent
 # is runtime state the agents write themselves. settings.json stays per-machine.
@@ -36,17 +38,12 @@ done
 
 case "$(uname -s)" in
   Darwin)
-    link zsh/.zshenv "$HOME/.zshenv"
-    link zsh "$HOME/.config/zsh"
     link karabiner "$HOME/.config/karabiner"
     ;;
   Linux)
-    link bash/.bashrc "$HOME/.bashrc"
-    link bash/.bash_profile "$HOME/.bash_profile"
     link fish "$HOME/.config/fish"
     link hypr "$HOME/.config/hypr"
     link waybar "$HOME/.config/waybar"
-    link wezterm/org.wezfurlong.wezterm.desktop "$HOME/.local/share/applications/org.wezfurlong.wezterm.desktop"
     ;;
 esac
 

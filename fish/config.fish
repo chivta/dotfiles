@@ -1,4 +1,4 @@
-# Mirrors shell/env.sh, which fish can't source
+# Mirrors the exports in bash/.bashrc, which fish can't source
 set -gx GOPATH /opt/go-workspace
 fish_add_path --global --path --move $HOME/.local/bin $HOME/.local/npm/bin $HOME/.cargo/bin $HOME/.tfenv/bin $GOPATH/bin
 set -gx PAGER less
@@ -11,8 +11,8 @@ set -gx __NV_DISABLE_EXPLICIT_SYNC 1
 if status is-interactive
     set -g fish_greeting
 
-    # rc.sh is bash/zsh syntax, but its alias lines are valid fish
-    string match -r '^alias .*' <$HOME/.config/shell/rc.sh | source
+    # .bashrc is bash syntax, but its top-level alias lines are valid fish
+    string match -r '^alias .*' <$HOME/.config/bash/.bashrc | source
 
     alias ll='ls -la --color=auto'
     alias ls='ls --color=auto'
