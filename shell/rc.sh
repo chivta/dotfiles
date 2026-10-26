@@ -1,6 +1,5 @@
-# Interactive setup shared by zsh (macOS) and bash (Arch), sourced from
-# .zshrc / .bashrc after their interactive-shell guard. Shell-specific bits
-# (keybinds, prompt, history, ls flags) stay in those files.
+# Interactive setup shared by macOS and Arch, sourced from bash/.bashrc after
+# its interactive-shell guard. OS-specific bits stay in .bashrc's uname case.
 
 # --- ALIASES ---
 alias claude2='CLAUDE_CONFIG_DIR="$HOME/.claude2" claude'
