@@ -82,5 +82,5 @@ Good examples:
 
 ## Comments
 
-- Keep comments and docs up to date with code changes. If any changes obsolete a comment or doc, update it.
-- Keep comments concise and only explain unusual or non-obvious behavior. Don't restate the code. Don't explain the obvious. Don't explain what the code does, explain why it does it that way. 95% of cases do not need comment.
+- NEVER WRITE COMMENTS unless logic is impossible to be understood from the code itself.
+- Keep existing comments and docs up to date with code changes. If any changes obsolete a comment or doc, update it.
