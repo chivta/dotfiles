@@ -1,21 +1,5 @@
-## General Guidance
+comments) that has likely already run in production (it's on origin/stage, origin/main or similar); add new migration(s) to change the schema instead.
 
-- Follow YAGNI (You Aren't Gonna Need It) principle unless told otherwise.
-- Don't be scared to propose radical changes if they can meaningfully benefit our work.
-- For any volatile information, always perform a web search before making assumptions. Volatile information includes:
-  - Versions — language runtimes, libraries, tools; always verify the current LTS/stable release
-  - Non-core features — peripheral or ecosystem-adjacent functionality that may have been deprecated, renamed, or moved (contrast: "PostgreSQL stores data" is stable fact; "PostgreSQL supports X extension syntax" is not)
-  - Cloud/SaaS resource limits and pricing — instance types, quotas, free tier limits change frequently
-- A question is a request for an answer, not for changes. Even if action is trivial. If the message opens with "how hard would it be", "can we", "why does", "should we", "is it possible", "can X do Y", "doesn't X do Y", "can't we do X" or otherwise asks rather than instructs: answer it, and do not edit files. Apply this silently: I know I asked a question, so a line saying you're answering rather than building adds nothing.
-- Ignore bugs unless I named the bug, a QA check or a test or verification run hit it, or it is highly critical (data loss, a security hole, a production outage). Ignoring means no fix, no plan item, no line in a subagent prompt and no mention in reports. A failure found only by reading code, such as a type assertion that panics on input nobody is known to send, does not qualify.
-- Plans always go to the local .claude directory unless the user requests otherwise.
-
-## Project conventions
-
-- Follow the project's existing conventions in everything: naming, file layout, error handling, libraries, tests, code style. Before any design decision (where a variable lives, what a method is called, which helper to use), find how the codebase already does it and do the same. Project conventions take precedence over the defaults in this file.
-- When the codebase does the same thing in competing ways, follow the approach used in newer files (check file age with `git log`). In a small project, or when file age doesn't settle it, name the competing approaches and let the user choose.
-- In a legacy file, write new code the newer way even though it breaks from the surrounding code, then suggest migrating the whole file to it.
-- Migrations are immutable and should be treated like a commit rather than current state. Never delete or modify an existing migration (and its comments) that has likely already run in production (it's on origin/stage, origin/main or similar); add new migration(s) to change the schema instead.
 - Never touch production, live databases, remote servers. If a task requires remote access or production data, stop immediately and ask for instructions.
 - Input validated at system boundaries only (HTTP handlers, queue consumers). Internal functions trust their callers.
 - Prefer named constants over hardcoded values. A magic number or string used even once should be a constant — it makes the intent visible, shows every place the value is used, and makes changes trivial.
@@ -82,5 +66,5 @@ Good examples:
 
 ## Comments
 
-- Keep comments and docs up to date with code changes. If any changes obsolete a comment or doc, update it.
-- Keep comments concise and only explain unusual or non-obvious behavior. Don't restate the code. Don't explain the obvious. Don't explain what the code does, explain why it does it that way. 95% of cases do not need comment.
+- NEVER WRITE COMMENTS unless there's some logic that's not obvious, coupling a comment with code is a sign that the code is not clear enough.
+- Keep existing comments and docs up to date with code changes. If any changes obsolete a comment or doc, update it.
