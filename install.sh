@@ -11,15 +11,19 @@ SHARED_CONFIGS="bash kitty nvim git tmux"
 # Codex and pi read the same instructions and skills as Claude Code
 AGENT_HOMES="$HOME/.codex $HOME/.pi/agent"
 
-# link <repo path> <target>
+# link <repo-relative or absolute source> <target>
 link() {
+  case "$1" in
+    /*) source=$1 ;;
+    *) source=$DOT/$1 ;;
+  esac
   if [ -e "$2" ] && [ ! -L "$2" ]; then
     mv "$2" "$2.bak"
     echo "moved $2 -> $2.bak"
   fi
   mkdir -p "$(dirname "$2")"
-  ln -sfn "$DOT/$1" "$2"
-  echo "linked $2 -> $DOT/$1"
+  ln -sfn "$source" "$2"
+  echo "linked $2 -> $source"
 }
 
 for d in $SHARED_CONFIGS; do link "$d" "$HOME/.config/$d"; done
