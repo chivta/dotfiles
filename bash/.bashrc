@@ -186,3 +186,4 @@ PROMPT_COMMAND=build_prompt
 if command -v fzf >/dev/null 2>&1; then
     eval "$(fzf --bash)"
 fi
+source ~/Projects/zitty/zitty-bashrc.bash
