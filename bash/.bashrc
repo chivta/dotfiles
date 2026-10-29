@@ -38,6 +38,7 @@ case "$(uname -s)" in
 esac
 
 # --- EXPORTS & PATHS ---
+# fish can't source this file; fish/config.fish repeats these values, keep them in sync.
 export PATH="$HOME/.local/bin:$HOME/.local/npm/bin:$HOME/.cargo/bin:$HOME/.tfenv/bin:$GOPATH/bin:$PATH"
 export PAGER='less'
 export LESS='-RF --mouse'
@@ -48,6 +49,9 @@ export DFT_BYTE_LIMIT=500000
 export KUBECONFIG="$HOME/.kube/config"
 
 # --- ALIASES ---
+# fish sources only the top-level `alias` lines of this file, so shared aliases
+# must stay one-line `alias name='...'` definitions.
+alias claude='claude-wrap'
 alias claude2='CLAUDE_CONFIG_DIR="$HOME/.claude2" claude'
 alias ccc2='CLAUDE_CONFIG_DIR="$HOME/.claude2" claude --continue'
 alias cc2='CLAUDE_CONFIG_DIR="$HOME/.claude2" claude'
@@ -91,11 +95,6 @@ source "$HOME/.config/bash/git-prompt.sh"
 mkcd() {
     mkdir -p "$1" && cd "$1"
 }
-
-# Auto-attach tmux on SSH login
-if [ -z "$TMUX" ] && [ -n "$SSH_TTY" ]; then
-    tmux attach-session -t main || tmux new-session -s main
-fi
 
 # --- KEYBINDS ---
 # Readline would otherwise rebind ^W to the tty's werase and ignore the bind -x below
@@ -183,3 +182,4 @@ PROMPT_COMMAND=build_prompt
 if command -v fzf >/dev/null 2>&1; then
     eval "$(fzf --bash)"
 fi
+source ~/Projects/zitty/zitty-bashrc.bash

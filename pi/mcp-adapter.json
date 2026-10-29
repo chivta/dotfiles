@@ -1,0 +1,12 @@
+{
+  "imports": ["claude-code", "claude-desktop"],
+  "claudePlugins": [
+    { "path": "~/.pi/agent/claude-plugins/figma", "mcp": true }
+  ],
+  "mcpServers": {
+    "playwright": {
+      "command": "python3",
+      "args": ["~/Projects/dotfiles/pi/playwright-launcher.py"]
+    }
+  }
+}
