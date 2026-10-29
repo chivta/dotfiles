@@ -51,6 +51,7 @@ export KUBECONFIG="$HOME/.kube/config"
 # --- ALIASES ---
 # fish sources only the top-level `alias` lines of this file, so shared aliases
 # must stay one-line `alias name='...'` definitions.
+alias claude='claude-wrap'
 alias claude2='CLAUDE_CONFIG_DIR="$HOME/.claude2" claude'
 alias ccc2='CLAUDE_CONFIG_DIR="$HOME/.claude2" claude --continue'
 alias cc2='CLAUDE_CONFIG_DIR="$HOME/.claude2" claude'
