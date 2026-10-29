@@ -47,4 +47,8 @@ Branch name: the ticket keys plus a 2–4 word English slug of the summary, e.g.
 
 Invoke the `explain` skill on the tickets, reading the code in the new directory. Answer in chat; write nothing into the repo.
 
-End with the branch, the directory, and `/cd <absolute path>` on its own line.
+End with the branch and the directory, then tell the user to run the command below themselves to move the session there, and print it last in its own code block so it copies cleanly:
+
+```
+/cd <absolute path of the new directory>
+```
