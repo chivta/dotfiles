@@ -39,11 +39,15 @@ Branch name: the ticket keys plus a 2–4 word English slug of the summary, e.g.
 1. If `git status --porcelain` prints anything, stop and ask; the uncommitted work is the user's.
 2. `git switch stage && git pull --ff-only && git switch -c <branch>`
 
-## 4. Enter the directory
+## 4. Name the session
+
+The session name becomes the kitty tab title, so it has to be readable in a narrow tab: one lowercase word for the task, like `drive` for `upload-gdrive` or `grok` for `grok-video`. Write it with `printf %s <name> > "$TMPDIR/claude-session-title-$CLAUDE_CODE_SESSION_ID"`. Only a hook can rename a session, and `~/.claude/hooks/session-title.sh` applies the name on the user's next prompt.
+
+## 5. Enter the directory
 
 `cd` into the new worktree or repo with Bash. The shell keeps that directory only when it's inside the session's working directories, so use absolute paths for the rest of the run. The built-in `/cd` is user-only; the closing message hands it to the user to move the whole session.
 
-## 5. Explain
+## 6. Explain
 
 Invoke the `explain` skill on the tickets, reading the code in the new directory. Answer in chat; write nothing into the repo.
 
