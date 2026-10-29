@@ -96,11 +96,6 @@ mkcd() {
     mkdir -p "$1" && cd "$1"
 }
 
-# Auto-attach tmux on SSH login
-if [ -z "$TMUX" ] && [ -n "$SSH_TTY" ]; then
-    tmux attach-session -t main || tmux new-session -s main
-fi
-
 # --- KEYBINDS ---
 # Readline would otherwise rebind ^W to the tty's werase and ignore the bind -x below
 bind 'set bind-tty-special-chars off'
