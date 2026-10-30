@@ -7,6 +7,8 @@ set -eu
 DOT="$(cd "$(dirname "$0")" && pwd)"
 TPM_DIR="$HOME/.tmux/plugins/tpm"
 TPM_REPO="https://github.com/tmux-plugins/tpm"
+CCSSH_DIR="$HOME/.local/src/claude-clipboard-ssh"
+CCSSH_REPO="https://github.com/jcollie/claude-clipboard-ssh"
 SHARED_CONFIGS="bash kitty nvim git tmux"
 # Codex and pi read the same instructions and skills as Claude Code
 AGENT_HOMES="$HOME/.codex $HOME/.pi/agent"
@@ -83,6 +85,16 @@ case "$(uname -s)" in
     link waybar "$HOME/.config/waybar"
     ;;
 esac
+
+# claude-wrap lets Cmd+V paste images into Claude Code over SSH. Upstream only
+# packages it for Nix, so it is built from source.
+if command -v zig >/dev/null 2>&1; then
+  [ -d "$CCSSH_DIR" ] || git clone "$CCSSH_REPO" "$CCSSH_DIR"
+  (cd "$CCSSH_DIR" && zig build -Doptimize=ReleaseSafe -Dtools=false --prefix "$HOME/.local")
+  echo "installed claude-wrap"
+else
+  echo "skipped claude-wrap: zig not installed"
+fi
 
 [ -d "$TPM_DIR" ] || git clone "$TPM_REPO" "$TPM_DIR"
 # Clones the @plugin entries (resurrect, continuum). Cloning TPM alone doesn't.
