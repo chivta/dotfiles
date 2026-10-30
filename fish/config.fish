@@ -13,6 +13,7 @@ if status is-interactive
 
     # .bashrc is bash syntax, but its top-level alias lines are valid fish
     string match -r '^alias .*' <$HOME/.config/bash/.bashrc | source
+    command -q claude-wrap; and alias claude=claude-wrap
 
     alias ll='ls -la --color=auto'
     alias ls='ls --color=auto'
