@@ -14,3 +14,6 @@ claude/skills/.system/
 fish/fish_variables
 
 .DS_Store
+
+# install.sh links these from the zitty release
+kitty/zitty*

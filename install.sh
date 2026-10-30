@@ -7,6 +7,9 @@ set -eu
 DOT="$(cd "$(dirname "$0")" && pwd)"
 TPM_DIR="$HOME/.tmux/plugins/tpm"
 TPM_REPO="https://github.com/tmux-plugins/tpm"
+ZITTY_VERSION="v0.1.0"
+ZITTY_DIR="$HOME/.local/share/zitty"
+ZITTY_URL="https://github.com/chivta/zitty/archive/refs/tags/$ZITTY_VERSION.tar.gz"
 SHARED_CONFIGS="bash kitty nvim git tmux"
 # Codex and pi read the same instructions and skills as Claude Code
 AGENT_HOMES="$HOME/.codex $HOME/.pi/agent"
@@ -73,14 +76,45 @@ for a in $AGENT_HOMES; do
   link claude/skills "$a/skills"
 done
 
+# claude-wrap lets Cmd+V paste images into Claude Code over SSH
+link claude-clipboard-ssh/claude-wrap "$HOME/.local/bin/claude-wrap"
+
+# Upgrading is a version bump and a re-run; existing version dirs are kept.
+# Extracted in a temp dir so a failed download never leaves a half-filled one.
+if [ ! -d "$ZITTY_DIR/$ZITTY_VERSION" ]; then
+  mkdir -p "$ZITTY_DIR"
+  zitty_tmp=$(mktemp -d "$ZITTY_DIR/.tmp.XXXXXX")
+  curl -fsSL "$ZITTY_URL" | tar xz --strip-components=1 -C "$zitty_tmp"
+  mv "$zitty_tmp" "$ZITTY_DIR/$ZITTY_VERSION"
+fi
+link "$ZITTY_DIR/$ZITTY_VERSION" "$ZITTY_DIR/current"
+link "$ZITTY_DIR/current/zitty" "$HOME/.local/bin/zitty"
+for f in zitty.py zitty_layout.py zitty.conf; do
+  link "$ZITTY_DIR/current/$f" "$HOME/.config/kitty/$f"
+done
+
 case "$(uname -s)" in
   Darwin)
     link karabiner "$HOME/.config/karabiner"
+    link "$ZITTY_DIR/current/zitty-macos.conf" "$HOME/.config/kitty/zitty-macos.conf"
     ;;
   Linux)
+    # xclip stub serves the pasted image to Claude Code; macOS needs none
+    link claude-clipboard-ssh/xclip "$HOME/.local/bin/xclip"
     link fish "$HOME/.config/fish"
     link hypr "$HOME/.config/hypr"
     link waybar "$HOME/.config/waybar"
+    for f in zitty-host zitty-claude-hook; do
+      link "$ZITTY_DIR/current/$f" "$HOME/.local/bin/$f"
+    done
+    for f in zitty-linux.conf zitty-home.conf zitty-home.session; do
+      link "$ZITTY_DIR/current/$f" "$HOME/.config/kitty/$f"
+    done
+    for f in zitty-snapshot.service zitty-snapshot.timer; do
+      link "$ZITTY_DIR/current/systemd/$f" "$HOME/.config/systemd/user/$f"
+    done
+    systemctl --user daemon-reload
+    systemctl --user enable --now zitty-snapshot.timer
     ;;
 esac
 

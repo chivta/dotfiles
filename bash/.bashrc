@@ -51,7 +51,8 @@ export KUBECONFIG="$HOME/.kube/config"
 # --- ALIASES ---
 # fish sources only the top-level `alias` lines of this file, so shared aliases
 # must stay one-line `alias name='...'` definitions.
-alias claude='claude-wrap'
+# fish mirrors this guarded alias in config.fish
+command -v claude-wrap >/dev/null && alias claude='claude-wrap'
 alias claude2='CLAUDE_CONFIG_DIR="$HOME/.claude2" claude'
 alias ccc2='CLAUDE_CONFIG_DIR="$HOME/.claude2" claude --continue'
 alias cc2='CLAUDE_CONFIG_DIR="$HOME/.claude2" claude'
@@ -182,4 +183,4 @@ PROMPT_COMMAND=build_prompt
 if command -v fzf >/dev/null 2>&1; then
     eval "$(fzf --bash)"
 fi
-source ~/Projects/zitty/zitty-bashrc.bash
+source ~/.local/share/zitty/current/zitty-bashrc.bash
