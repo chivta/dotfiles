@@ -63,7 +63,6 @@ alias ccc='claude --continue'
 alias dc='docker-compose'
 alias d='docker'
 alias g='git'
-alias nv='nvim'
 alias k='kubectl'
 alias ks='kubectl'
 alias tf='terraform'
@@ -95,6 +94,10 @@ source "$HOME/.config/bash/git-prompt.sh"
 # --- CUSTOM FUNCTIONS ---
 mkcd() {
     mkdir -p "$1" && cd "$1"
+}
+
+nv() {
+    command nvim "${@:-.}"
 }
 
 # --- KEYBINDS ---
