@@ -7,7 +7,7 @@ set -eu
 DOT="$(cd "$(dirname "$0")" && pwd)"
 TPM_DIR="$HOME/.tmux/plugins/tpm"
 TPM_REPO="https://github.com/tmux-plugins/tpm"
-ZITTY_VERSION="v0.1.0"
+ZITTY_VERSION="v0.1.1"
 ZITTY_DIR="$HOME/.local/share/zitty"
 ZITTY_URL="https://github.com/chivta/zitty/archive/refs/tags/$ZITTY_VERSION.tar.gz"
 SHARED_CONFIGS="bash kitty nvim git tmux"
