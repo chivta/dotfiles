@@ -170,7 +170,11 @@ build_prompt() {
     export PS1="${MARK_A}${LINE_1}\n${LINE_2}"
 }
 
-PROMPT_COMMAND=build_prompt
+# A TUI that dies with a dropped ssh or zmx session leaves mouse tracking on, and
+# the terminal then types "M35;57;52M..." into bash on every mouse move.
+MOUSE_TRACKING_OFF='\e[?1000l\e[?1002l\e[?1003l\e[?1006l'
+
+PROMPT_COMMAND='build_prompt; printf "$MOUSE_TRACKING_OFF"'
 
 # Inside tmux, mark each prompt (OSC 133;A, added by build_prompt) and the start
 # of each command's output (OSC 133;C). tmux's copy mode jumps between them, and
