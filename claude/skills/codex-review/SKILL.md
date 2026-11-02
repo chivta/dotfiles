@@ -36,13 +36,14 @@ Stop one hop from the tickets: links of linked issues aren't followed. Paste eve
 
 ## 3. Run Codex
 
-In a new directory under the scratchpad, write `code-prompt.md` and `business-prompt.md` from the templates below, filling `<BASE>`, `<SHA>` and the context. Start both runs from the repo root with Bash `run_in_background: true`:
+Both runs go through the Codex plugin's companion runtime, which tracks them as jobs visible in `/codex:status` and `/codex:result`. In a new directory under the scratchpad, write `code-prompt.md` and `business-prompt.md` from the templates below, filling `<BASE>`, `<SHA>` and the context. Start both runs from the repo root with Bash `run_in_background: true`:
 
 ```
-codex exec -m gpt-6.1-sol -c model_reasoning_effort='"high"' -s read-only --color never -o <dir>/code.md - < <dir>/code-prompt.md > <dir>/code.log 2>&1
+companion=$(ls -d ~/.claude/plugins/cache/openai-codex/codex/*/scripts/codex-companion.mjs | sort -V | tail -1)
+node "$companion" task --model gpt-6.1-sol --effort high --prompt-file <dir>/code-prompt.md > <dir>/code.md 2> <dir>/code.log
 ```
 
-and the same with `business` in place of `code`. Each run takes several minutes and you are notified when it exits. stdout echoes the whole session, so read only the `-o` file; on a non-zero exit or an empty `-o` file, report the tail of the log instead of that review.
+and the same with `business` in place of `code`. Without `--write` the task runs in a read-only sandbox. Each run takes several minutes and you are notified when it exits. stdout holds only Codex's final message and stderr its progress; on a non-zero exit or an empty stdout file, report the tail of the log instead of that review. If the companion reports Codex missing or unauthenticated, tell the user to run `/codex:setup`.
 
 `code-prompt.md`:
 
