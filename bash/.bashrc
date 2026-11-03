@@ -56,7 +56,7 @@ command -v claude-wrap >/dev/null && alias claude='claude-wrap'
 alias claude2='CLAUDE_CONFIG_DIR="$HOME/.claude2" claude'
 alias ccc2='CLAUDE_CONFIG_DIR="$HOME/.claude2" claude --continue'
 alias cc2='CLAUDE_CONFIG_DIR="$HOME/.claude2" claude'
-alias diffthing='diff --offline'
+alias diffthing='diffthing --llm codex --offline'
 alias c='claude'
 alias cc='claude'
 alias ccc='claude --continue'
@@ -64,7 +64,6 @@ alias dc='docker-compose'
 alias d='docker'
 alias g='git'
 alias zsm='zmx-session-manager'
-alias nv='nvim'
 alias k='kubectl'
 alias ks='kubectl'
 alias tf='terraform'
@@ -96,6 +95,10 @@ source "$HOME/.config/bash/git-prompt.sh"
 # --- CUSTOM FUNCTIONS ---
 mkcd() {
     mkdir -p "$1" && cd "$1"
+}
+
+nv() {
+    command nvim "${@:-.}"
 }
 
 # --- KEYBINDS ---
