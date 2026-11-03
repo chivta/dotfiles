@@ -17,6 +17,10 @@
       "rev": "5152bada7d81cd602373e77534aabc631419e8e0",
       "src": "https://github.com/dlyongemallo/diffview-plus.nvim"
     },
+    "diffview.nvim": {
+      "rev": "4516612fe98ff56ae0415a259ff6361a89419b0a",
+      "src": "https://github.com/sindrets/diffview.nvim"
+    },
     "fff": {
       "rev": "89c19270ea2dfc20829a7429f72022571558093e",
       "src": "https://github.com/dmtrKovalenko/fff"
