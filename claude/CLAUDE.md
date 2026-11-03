@@ -80,6 +80,11 @@ Good examples:
 "ref: ScheduleRepository -> FacebookScheduleRepository"
 "feat: added audience model"
 
+## Pull Requests
+
+- Make PR title the same as other PR titles in the repo.
+- Do not add description to PR, only leave link to another PR is it's a follow-up or directly related to it.
+
 ## Comments
 
 - NEVER WRITE COMMENTS unless logic is impossible to be understood from the code itself.
