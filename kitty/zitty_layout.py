@@ -1,1 +1,1 @@
-/Users/vlasenko.artem/Projects/zitty/zitty_layout.py
+/Users/vlasenko.artem/.local/share/zitty/current/zitty_layout.py
