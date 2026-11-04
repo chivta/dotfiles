@@ -44,5 +44,3 @@
 # the include when the file is missing. Keep last so it overrides the above.
 [include]
 	path = config.local
-[credential]
-	helper = /usr/lib/git-core/git-credential-libsecret
