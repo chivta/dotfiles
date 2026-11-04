@@ -6,11 +6,10 @@ set -eu
 [ "$(id -u)" -eq 0 ] || { echo "run with sudo" >&2; exit 1; }
 [ -n "${SUDO_USER:-}" ] || { echo "run via sudo as the normal user, not as root directly" >&2; exit 1; }
 
-# build-essential: nvim-treesitter compiles parsers. difftastic: git's diff.external.
-# ripgrep: telescope. unzip, nodejs, npm, golang-go: mason installs the nvim LSP
+# build-essential: nvim-treesitter compiles parsers. ripgrep: telescope. unzip, nodejs, npm, golang-go: mason installs the nvim LSP
 # servers and formatters (lsp.lua TOOLS) from zip, npm and go sources.
 apt-get update
-apt-get install -y git curl ca-certificates python3 tmux jq fzf ripgrep difftastic \
+apt-get install -y git curl ca-certificates python3 tmux jq fzf ripgrep \
   build-essential unzip nodejs npm golang-go
 
 # Keeps the user systemd manager, the zitty snapshot timer and zmx sessions alive after ssh logout

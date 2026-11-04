@@ -1,8 +1,9 @@
 #!/bin/sh
 # Symlinks dotfiles into place for the current OS and installs tmux plugins and
-# the pinned zitty release. On Linux it also installs pinned zmx, neovim and the
-# tree-sitter CLI, links the Hyprland configs only when Hyprland is present, and
-# registers the zitty Claude Code hooks. On Debian run ./debian.sh (root) first.
+# the pinned zitty release. On Linux it also installs pinned zmx, neovim, the
+# tree-sitter CLI and difftastic, links the Hyprland configs only when Hyprland
+# is present, and registers the zitty Claude Code hooks. On Debian run
+# ./debian.sh (root) first.
 # Safe to re-run. A real file/dir already at a target is moved to <target>.bak
 # first, since `ln -sfn` onto a real directory would link inside it.
 set -eu
@@ -23,6 +24,9 @@ NVIM_URL="https://github.com/neovim/neovim/releases/download/$NVIM_VERSION/nvim-
 TREE_SITTER_VERSION="v0.27.1"
 TREE_SITTER_DIR="$HOME/.local/share/tree-sitter"
 TREE_SITTER_URL="https://github.com/tree-sitter/tree-sitter/releases/download/$TREE_SITTER_VERSION/tree-sitter-linux-x64.gz"
+DIFFT_VERSION="0.72.0"
+DIFFT_DIR="$HOME/.local/share/difftastic"
+DIFFT_URL="https://github.com/Wilfred/difftastic/releases/download/$DIFFT_VERSION/difft-$DIFFT_VERSION-x86_64-unknown-linux-gnu.tar.gz"
 SHARED_CONFIGS="bash kitty nvim git tmux"
 # Codex and pi read the same instructions and skills as Claude Code
 AGENT_HOMES="$HOME/.codex $HOME/.pi/agent"
@@ -152,6 +156,9 @@ case "$(uname -s)" in
     # nvim-treesitter main needs CLI >= 0.26.1, Debian ships 0.22.6
     fetch_gz_binary "$TREE_SITTER_URL" "$TREE_SITTER_DIR/$TREE_SITTER_VERSION" tree-sitter
     link "$TREE_SITTER_DIR/$TREE_SITTER_VERSION/tree-sitter" "$HOME/.local/bin/tree-sitter"
+    # git's diff.external; Debian has no difftastic package
+    fetch_tarball "$DIFFT_URL" "$DIFFT_DIR/$DIFFT_VERSION" 0
+    link "$DIFFT_DIR/$DIFFT_VERSION/difft" "$HOME/.local/bin/difft"
     for f in zitty-host zitty-claude-hook; do
       link "$ZITTY_DIR/current/$f" "$HOME/.local/bin/$f"
     done
