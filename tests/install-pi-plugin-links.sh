@@ -7,9 +7,9 @@ trap 'rm -rf "$TMP"' EXIT HUP INT TERM
 # install.sh links $HOME/.config/kitty to the repo's kitty dir and then writes the
 # zitty links into it, so a run against the real checkout would point the
 # machine's kitty config at this temp dir.
-DOT="$TMP/dot"
-cp -R "$REPO" "$DOT"
-rm -rf "$DOT/.git"
+cp -R "$REPO" "$TMP/dot"
+rm -rf "$TMP/dot/.git"
+DOT=$(cd "$TMP/dot" && pwd)
 export HOME="$TMP/home"
 mkdir -p "$HOME/bin" "$HOME/.pi/agent/claude-plugins/figma" "$HOME/.claude/plugins/cache/figma/active-v1" "$HOME/.claude/plugins/cache/figma/active-v2" "$HOME/.claude/plugins/cache/playwright/active" "$HOME/.tmux"
 printf 'preserve backup\n' > "$HOME/.pi/agent/claude-plugins/figma/original"
