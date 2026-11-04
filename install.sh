@@ -1,6 +1,6 @@
 #!/bin/sh
-# Symlinks dotfiles into place for the current OS and installs tmux plugins and
-# the pinned zitty release. On Linux it also installs pinned zmx, neovim, the
+# Symlinks dotfiles into place for the current OS and installs the pinned zitty
+# release and, when tmux is present, its plugins. On Linux it also installs pinned zmx, neovim, the
 # tree-sitter CLI and difftastic, links the Hyprland configs only when Hyprland
 # is present, and registers the zitty Claude Code hooks. On Debian run
 # ./debian.sh (root) first.
@@ -32,7 +32,7 @@ SHARED_CONFIGS="bash kitty nvim git tmux"
 AGENT_HOMES="$HOME/.codex $HOME/.pi/agent"
 
 missing=""
-for cmd in git curl tar python3 tmux jq; do
+for cmd in git curl tar python3 jq; do
   command -v "$cmd" >/dev/null 2>&1 || missing="$missing $cmd"
 done
 if [ -n "$missing" ]; then
@@ -190,6 +190,10 @@ PY
     ;;
 esac
 
-[ -d "$TPM_DIR" ] || git clone "$TPM_REPO" "$TPM_DIR"
-# Clones the @plugin entries (resurrect, continuum). Cloning TPM alone doesn't.
-"$TPM_DIR/bin/install_plugins"
+if command -v tmux >/dev/null 2>&1; then
+  [ -d "$TPM_DIR" ] || git clone "$TPM_REPO" "$TPM_DIR"
+  # Clones the @plugin entries (resurrect, continuum). Cloning TPM alone doesn't.
+  "$TPM_DIR/bin/install_plugins"
+else
+  echo "skipped tmux plugins: tmux not installed"
+fi

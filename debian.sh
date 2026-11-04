@@ -9,7 +9,7 @@ set -eu
 # build-essential: nvim-treesitter compiles parsers. ripgrep: telescope. unzip, nodejs, npm, golang-go: mason installs the nvim LSP
 # servers and formatters (lsp.lua TOOLS) from zip, npm and go sources.
 apt-get update
-apt-get install -y git curl ca-certificates python3 tmux jq fzf ripgrep \
+apt-get install -y git curl ca-certificates python3 jq fzf ripgrep \
   build-essential unzip nodejs npm golang-go
 
 # Keeps the user systemd manager, the zitty snapshot timer and zmx sessions alive after ssh logout
