@@ -17,6 +17,7 @@ loginctl enable-linger "$SUDO_USER"
 
 # Each kitty split from the Mac is one ssh channel; the default of 10 caps the layout
 echo "MaxSessions 64" > /etc/ssh/sshd_config.d/zitty.conf
-systemctl reload ssh
+# A socket-activated sshd cannot re-bind port 22 on reload; existing sessions survive the restart
+systemctl restart ssh
 
 echo "done; now run ./install.sh as $SUDO_USER"
