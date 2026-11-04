@@ -1,1 +1,0 @@
-/Users/vlasenko.artem/.local/share/zitty/current/zitty.py
