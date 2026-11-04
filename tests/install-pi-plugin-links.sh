@@ -1,9 +1,15 @@
 #!/bin/sh
 set -eu
 
-DOT=$(CDPATH='' cd "$(dirname "$0")/.." && pwd)
+REPO=$(CDPATH='' cd "$(dirname "$0")/.." && pwd)
 TMP=$(mktemp -d "${TMPDIR:-/tmp}/pi-plugin-links.XXXXXX")
 trap 'rm -rf "$TMP"' EXIT HUP INT TERM
+# install.sh links $HOME/.config/kitty to the repo's kitty dir and then writes the
+# zitty links into it, so a run against the real checkout would point the
+# machine's kitty config at this temp dir.
+DOT="$TMP/dot"
+cp -R "$REPO" "$DOT"
+rm -rf "$DOT/.git"
 export HOME="$TMP/home"
 mkdir -p "$HOME/bin" "$HOME/.pi/agent/claude-plugins/figma" "$HOME/.claude/plugins/cache/figma/active-v1" "$HOME/.claude/plugins/cache/figma/active-v2" "$HOME/.claude/plugins/cache/playwright/active" "$HOME/.tmux"
 printf 'preserve backup\n' > "$HOME/.pi/agent/claude-plugins/figma/original"
