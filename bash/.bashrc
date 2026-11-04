@@ -28,7 +28,11 @@ case "$(uname -s)" in
 
         alias ll='ls -la --color=auto'
         alias ls='ls --color=auto'
-        alias update='sudo pacman -Syu'
+        if command -v pacman >/dev/null 2>&1; then
+            alias update='sudo pacman -Syu'
+        elif command -v apt-get >/dev/null 2>&1; then
+            alias update='sudo apt update && sudo apt upgrade'
+        fi
         alias virst=virsh
         alias hyperctl='hyprctl'
         alias lg='looking-glass-client -F'

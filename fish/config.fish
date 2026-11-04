@@ -17,7 +17,11 @@ if status is-interactive
 
     alias ll='ls -la --color=auto'
     alias ls='ls --color=auto'
-    alias update='sudo pacman -Syu'
+    if command -q pacman
+        alias update='sudo pacman -Syu'
+    else if command -q apt-get
+        alias update='sudo apt update && sudo apt upgrade'
+    end
     alias virst=virsh
     alias hyperctl='hyprctl'
     alias lg='looking-glass-client -F'
