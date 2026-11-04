@@ -1,9 +1,9 @@
 #!/bin/sh
 # Symlinks dotfiles into place for the current OS and installs the pinned zitty
-# release and, when tmux is present, its plugins. On Linux it also installs pinned zmx, neovim, the
-# tree-sitter CLI and difftastic, links the Hyprland configs only when Hyprland
-# is present, and registers the zitty Claude Code hooks. On Debian run
-# ./debian.sh (root) first.
+# release and, when tmux is present, its plugins. On Linux it also installs
+# pinned zmx, neovim, the tree-sitter CLI and difftastic, links the Hyprland
+# configs only when Hyprland is present, and registers the zitty Claude Code
+# hooks. On Debian run ./debian.sh (root) first.
 # Safe to re-run. A real file/dir already at a target is moved to <target>.bak
 # first, since `ln -sfn` onto a real directory would link inside it.
 set -eu
