@@ -63,6 +63,7 @@ alias ccc='claude --continue'
 alias dc='docker-compose'
 alias d='docker'
 alias g='git'
+alias zsm='zmx-session-manager'
 alias k='kubectl'
 alias ks='kubectl'
 alias tf='terraform'
@@ -173,7 +174,13 @@ build_prompt() {
     export PS1="${MARK_A}${LINE_1}\n${LINE_2}"
 }
 
-PROMPT_COMMAND=build_prompt
+# A TUI that dies with a dropped ssh or zmx session leaves mouse tracking and kitty's
+# keyboard protocol on. Mouse moves and keys then reach bash as escape codes it doesn't
+# know, so it prints "M35;57;52M..." and rings the bell. Popping 99 keyboard levels
+# empties kitty's stack, which resets the flags however many levels the TUI pushed.
+INPUT_MODES_OFF='\e[?1000l\e[?1002l\e[?1003l\e[?1006l\e[<99u'
+
+PROMPT_COMMAND='build_prompt; printf "$INPUT_MODES_OFF"'
 
 # Inside tmux, mark each prompt (OSC 133;A, added by build_prompt) and the start
 # of each command's output (OSC 133;C). tmux's copy mode jumps between them, and
