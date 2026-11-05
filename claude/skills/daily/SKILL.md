@@ -24,7 +24,9 @@ Site `cloudId: "https://amomobile.atlassian.net"`, four calls:
 
 ## 3. GitHub
 
-`python3 "<this skill's folder>/scripts/prs.py"` prints, grouped by day, what happened in the window to `amomama` PRs I authored or reviewed: opened, reviews from others (approved, changes requested, commented), review requests, merges with the branch and who merged, closes. The PR title and branch carry the Jira key.
+`python3 "<this skill's folder>/scripts/prs.py"` prints, grouped by day, what happened in the window to `amomama` PRs I authored, reviewed or am asked to review: opened, reviews (approved, changes requested, commented), review requests, merges with the branch and who merged, closes. The PR title and branch carry the Jira key.
+
+Anything said about a PR goes only as far as this output confirms. Sessions show what I worked on, and GitHub shows what actually happened. A review I ran locally in a session, with no review by `me` in the output, is «почав рев'ю», not «зарев'ював». When a session mentions a PR that isn't in the output, check it with `gh pr view <number> -R <owner/repo> --json state,latestReviews,reviewRequests`.
 
 ## 4. Google Calendar
 

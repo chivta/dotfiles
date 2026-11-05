@@ -7,7 +7,7 @@ from datetime import datetime, time
 from sessions import local_time, previous_working_day
 
 ORG = "amomama"
-SEARCHES = ("author:@me", "reviewed-by:@me")
+SEARCHES = ("author:@me", "reviewed-by:@me", "review-requested:@me")
 MAX_PRS = 50
 MAX_EVENTS = 100
 QUERY = """
