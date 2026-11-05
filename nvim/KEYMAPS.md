@@ -33,6 +33,7 @@ Consequences of the delete change: `ddp` no longer swaps lines and `xp` no longe
 | `<C-p>`, `<leader>pf` | n | find files (fff, frecency ranked) | `after/plugin/fff.lua` |
 | `<leader>ps` | n | grep project (fff) | `after/plugin/fff.lua` |
 | `<leader>pw` | n, x | grep word under cursor or selection (fff) | `after/plugin/fff.lua` |
+| `<C-l>` | fff picker | send matches (or the `<Tab>`-marked ones) to quickfix, then `]q` / `[q` walk them | `after/plugin/fff.lua` |
 | `<leader>pv`, `-` | n | file explorer (oil), edit the listing then `:w` to apply | `lua/config/remap.lua`, `after/plugin/oil.lua` |
 | `<leader>a` | n | pin current file to harpoon | `after/plugin/harpoon.lua` |
 | `<C-e>` | n | harpoon list, reorder or delete lines to edit it | `after/plugin/harpoon.lua` |
