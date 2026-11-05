@@ -36,14 +36,14 @@ Ukrainian, one block with no blank lines, printed inside a ```text fence so it c
 
 ```text
 Вчора:
-- AT-10512 експорт підписників розсилки в CSV — розрулив конфлікти зі stage, апрув від Олега, змерджено в stage (Марта)
-- AT-10530 повторна відправка подій партнерам після збою — відкрив PR, рев'ю з коментарями від Андрія, пофіксив, у Ready for Testing
+- таска про експорт підписників розсилки в CSV «AT-10512» — пофіксив конфлікти зі stage, апрув від Олега, змерджено в stage (Марта)
+- таска де партнерам повторно відправляються події після збою «AT-10530» — відкрив PR, рев'ю з коментарями від Андрія, пофіксив, у Ready for Testing
 - міти «Planning» о 12:00 і «Retro» о 16:00
 Сьогодні:
-- AT-10512 експорт підписників розсилки в CSV — задеплоєно
-- AT-10541 обмеження кількості запитів до API — продовжую
-- на рев'ю: AT-10533 (швидші превʼю статей), AT-10538 (перенесення тегів у нову схему)
-- на тестуванні: AT-10520 (пуші в Safari), AT-10527 (фільтр статей за автором)
+- таска про експорт підписників розсилки в CSV «AT-10512» — задеплоєно
+- таска про ліміт запитів до API «AT-10541» — продовжую
+- на рев'ю: таска про швидші превʼю статей «AT-10533», таска де теги переїжджають у нову схему «AT-10538»
+- на тестуванні: таска про пуші в Safari «AT-10520», таска про фільтр статей за автором «AT-10527»
 - міти «Daily» о 10:00 і «Grooming» о 15:00
 ```
 
@@ -51,8 +51,10 @@ On Monday the first header is «У п'ятницю:».
 
 Each section has one line per ticket that something happened to that day, telling its lifecycle in order across all sources: work from sessions and commits, PR opened, reviews, fixes after review, merge into stage, Jira status changes, deploy. Events about the same ticket merge into one line; a session's branch or title and a PR's branch or title usually name the ticket. Work without a ticket gets a line named by what it was about. Meetings go on the last line of each section, by title and start time.
 
-Task names, including the short ones in grouped lines, are plain Ukrainian that someone outside the code understands: what the task changes for the product, not how. They come from the Jira summary, the PR title and the session, with no code identifiers, field names or English dev jargon: `[BE] fb page_impressions_unique (old)` is «прибирання застарілих метрик Facebook», `Seo canonical id from forebiden site group` is «SEO-тег canonical на сайтах Amomama». When those sources don't make the meaning clear, read the ticket with `getJiraIssue`. The same goes for what happened: «згенерував порівняння API до і після PR», not «swagger diff через oasdiff».
+Every task, in grouped lines too, is named literally `таска про …` or `таска де …` followed by its key in «»: `таска про прибирання застарілих метрик Facebook «AT-10309»`. The name says in plain Ukrainian what the task changes for the product, not how, so someone outside the code understands it. It comes from the Jira summary, the PR title and the session, with no code identifiers or field names: `[BE] fb page_impressions_unique (old)` becomes `таска про прибирання застарілих метрик Facebook`, `Seo canonical id from forebiden site group` becomes `таска про SEO-тег canonical на сайтах Amomama`. When those sources don't make the meaning clear, read the ticket with `getJiraIssue`.
+
+What happened is told in dev slang with anglicisms: пофіксив, змерджив, задеплоїв, зарев'ював, запушив, апрув, рев'ю. It stays free of code identifiers and tool names too: «згенерував порівняння API до і після PR», not «swagger diff через oasdiff».
 
 Other people appear by first name in Ukrainian, read from the GitHub name or login when it spells one out (DarynaBondarets → Дарина), otherwise by login as is. Their actions take a passive or noun form so no gender is guessed: «змерджено в stage (Дарина)», «апрув від Даниїла». Jira status changes read as where the task got to («у Ready for Testing», «задеплоєно»), since the source doesn't say who moved it.
 
-The today section starts with the lines for what already happened today, then every in-progress task not yet named in the today section: each In Progress task on its own line, and the In Review and Ready for Testing tasks grouped into one line per status with a two-to-four-word name each.
+The today section starts with the lines for what already happened today, then every in-progress task not yet named in the today section: each In Progress task on its own line, and the In Review and Ready for Testing tasks grouped into one line per status.
