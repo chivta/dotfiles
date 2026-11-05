@@ -24,7 +24,7 @@ Site `cloudId: "https://amomobile.atlassian.net"`, four calls:
 
 ## 3. Google Calendar
 
-Through the Google Calendar connector (`mcp__claude_ai_Google_Calendar__*`, load its tools with ToolSearch), list events on my primary calendar for the previous working day and today. Drop all-day events and events I declined. When the connector isn't connected, write the text without meetings and say so in one line under the fence.
+Through the `google-calendar` MCP server (`mcp__google-calendar__*`, load its tools with ToolSearch), list events on my primary calendar for the previous working day and today. Drop all-day events and events I declined. When the server isn't connected, write the text without meetings and say so in one line under the fence.
 
 ## Text
 
