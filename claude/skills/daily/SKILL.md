@@ -36,14 +36,14 @@ Ukrainian, one block with no blank lines, printed inside a ```text fence so it c
 
 ```text
 Вчора:
-- таски по розсилках «AT-10512», «AT-10541» — пофіксив конфлікти, змерджено в stage
-- по превʼю статей «AT-10533» і тегах «AT-10538» отримав апрув
-- відкрив PR по вебхуках партнерів «AT-10530», пофіксив коментарі з рев'ю, тепер у Ready for Testing
+- таски по розсилках — пофіксив конфлікти, змерджено в stage
+- по превʼю статей і тегах отримав апрув
+- відкрив PR по вебхуках партнерів, пофіксив коментарі з рев'ю, тепер у Ready for Testing
 - мав міт з Олегом і грумінг
 Сьогодні:
-- розсилки «AT-10512», «AT-10541» задеплоєно
-- продовжую таску про ліміти API «AT-10545»
-- на рев'ю превʼю статей «AT-10533» і теги «AT-10538», на тестуванні пуші в Safari «AT-10520» і фільтр по авторах «AT-10527»
+- розсилки задеплоєно
+- продовжую таску про ліміти API
+- на рев'ю превʼю статей і теги, на тестуванні пуші в Safari і фільтр по авторах
 - буде міт по релізу
 ```
 
@@ -51,7 +51,7 @@ On Monday the first header is «У п'ятницю:».
 
 Lines group work, not events. For each section, collect everything that happened to each ticket that day across all sources: work from sessions and commits, PR opened, reviews, fixes after review, merge into stage, Jira status changes, deploy; a session's or PR's branch or title usually names the ticket. Then join related things into one line: tickets of the same feature or area (one epic, one summary tag like `[Creative builder]`, one shared PR or branch), tickets with a similar update (merged, approved, in Ready for Testing, deployed), and work without a ticket that fed one (a design discussion that became the task). A small extra step of one ticket joins the shared update.
 
-Tasks are named short, by what unifies them, followed by their keys in «»: «таска по креейтів білдеру «AT-10744», «AT-10746»», «таска про атлас «AT-10722»», «таски по метриках Facebook». The label comes from the summary tag, epic, branch or PR title, in words someone outside the code understands, with no code identifiers or field names. When those sources don't make the meaning clear, read the ticket with `getJiraIssue`.
+Tasks are named short, by what unifies them, with no ticket keys: «таска по креейтів білдеру», «таска про атлас», «таски по метриках Facebook». The label comes from the summary tag, epic, branch or PR title, in words someone outside the code understands, with no code identifiers or field names. When those sources don't make the meaning clear, read the ticket with `getJiraIssue`.
 
 Vary the wording the way a person talks: not every line starts with «таска»; mix «таска по …», «таски про …», «по …», «PR по …», and sometimes put the verb first. Updates are in dev slang with anglicisms. My own steps are in first person: пофіксив, відкрив PR, зарев'ював, отримав апрув. Merges into stage and deploys are done by others, and Jira doesn't say who moved a status, so those are stated as plain facts: змерджено в stage, задеплоєно, у Ready for Testing. Updates stay free of code identifiers and tool names: «згенерував порівняння API до і після PR», not «swagger diff через oasdiff».
 
