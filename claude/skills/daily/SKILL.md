@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 Draft my standup update: what I did on the previous working day and what I'll do today. The previous working day is yesterday, or Friday when today is Monday. Gather the three sources, then write the text.
 
-`getWorkActivity` and Calendar take local-time ISO datetimes with the offset from `date +%z` (e.g. `2026-11-04T00:00:00+02:00`), because a bare `YYYY-MM-DD` is read as UTC and shifts the day by the offset. JQL rejects offsets and takes `"YYYY-MM-DD HH:mm"`, read in my Jira timezone.
+`getWorkActivity` takes local-time ISO datetimes with the offset from `date +%z` (e.g. `2026-11-04T00:00:00+02:00`), because a bare `YYYY-MM-DD` is read as UTC and shifts the day by the offset. JQL rejects offsets and takes `"YYYY-MM-DD HH:mm"`, read in my Jira timezone.
 
 ## 1. Claude sessions
 
@@ -24,7 +24,7 @@ Site `cloudId: "https://amomobile.atlassian.net"`, four calls:
 
 ## 3. Google Calendar
 
-Through the `google-calendar` MCP server (`mcp__google-calendar__*`, load its tools with ToolSearch), list events on my primary calendar for the previous working day and today. Drop all-day events and events I declined. When the server isn't connected, write the text without meetings and say so in one line under the fence.
+`python3 "<this skill's folder>/scripts/meetings.py"` prints my meetings from the previous working day through the end of today, grouped by day, without all-day events and events I declined. When it exits with "not authorized", write the text without meetings and say so in one line under the fence.
 
 ## Text
 
