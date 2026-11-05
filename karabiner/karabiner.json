@@ -64,7 +64,7 @@
                         ]
                     },
                     {
-                        "description": "Cmd+K → Close Window (Cmd+W) except in Kitty",
+                        "description": "Cmd+K → Quit App (Cmd+Q) except in Kitty",
                         "manipulators": [
                             {
                                 "conditions": [
@@ -84,7 +84,7 @@
                                 },
                                 "to": [
                                     {
-                                        "key_code": "w",
+                                        "key_code": "q",
                                         "modifiers": ["command"]
                                     }
                                 ],
