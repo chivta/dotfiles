@@ -36,24 +36,24 @@ Ukrainian, one block with no blank lines, printed inside a ```text fence so it c
 
 ```text
 Вчора:
-- змерджено в stage: таска про експорт підписників розсилки в CSV «AT-10512», таска про ліміт запитів до API «AT-10541»
-- отримав апрув: таска про швидші превʼю статей «AT-10533», таска де теги переїжджають у нову схему «AT-10538»
-- таска де партнерам повторно відправляються події після збою «AT-10530» — відкрив PR, отримав коментарі в рев'ю, пофіксив, у Ready for Testing
+- таска про експорт підписників розсилки в CSV «AT-10512», таска про ліміт запитів до API «AT-10541», пофіксив конфлікти і змерджив в stage
+- таска про швидші превʼю статей «AT-10533», таска де теги переїжджають у нову схему «AT-10538», отримав апрув
+- таска де партнерам повторно відправляються події після збою «AT-10530», відкрив PR, пофіксив коментарі з рев'ю і перевів у Ready for Testing
 - міти «Planning» о 12:00 і «Retro» о 16:00
 Сьогодні:
-- задеплоєно: таска про експорт підписників розсилки в CSV «AT-10512», таска про ліміт запитів до API «AT-10541»
-- таска про пошук по архіву статей «AT-10545» — продовжую
-- на рев'ю: таска про швидші превʼю статей «AT-10533», таска де теги переїжджають у нову схему «AT-10538»
-- на тестуванні: таска про пуші в Safari «AT-10520», таска про фільтр статей за автором «AT-10527»
+- таска про експорт підписників розсилки в CSV «AT-10512», таска про ліміт запитів до API «AT-10541», задеплоїв
+- таска про пошук по архіву статей «AT-10545», продовжую
+- таска про швидші превʼю статей «AT-10533», таска де теги переїжджають у нову схему «AT-10538», на рев'ю
+- таска про пуші в Safari «AT-10520», таска про фільтр статей за автором «AT-10527», на тестуванні
 - міти «Daily» о 10:00 і «Grooming» о 15:00
 ```
 
 On Monday the first header is «У п'ятницю:».
 
-Each section tells, per ticket, everything that happened to it that day, in order across all sources: work from sessions and commits, PR opened, reviews, fixes after review, merge into stage, Jira status changes, deploy. Events about the same ticket merge into one line; a session's branch or title and a PR's branch or title usually name the ticket. Tickets whose update for the day is the same share one line that starts with the update: «змерджено в stage: таска …, таска …». Work without a ticket gets a line named by what it was about. Meetings go on the last line of each section, by title and start time.
+Lines group tasks, not events. For each section, collect everything that happened to each ticket that day across all sources: work from sessions and commits, PR opened, reviews, fixes after review, merge into stage, Jira status changes, deploy; a session's or PR's branch or title usually names the ticket. Then all tickets with a similar update share one line: the tasks first, comma-separated, then the update, as in `таска про …, таска де …, пофіксив конфлікти і змерджив в stage`. Similar means the same milestone (merged, approved, in Ready for Testing, deployed); a small extra step of one ticket, like fixing conflicts, joins the shared update. A ticket with an update of its own gets its own line in the same shape. Work without a ticket gets a line named by what it was about. Meetings go on the last line of each section, by title and start time.
 
-Every task, in grouped lines too, is named literally `таска про …` or `таска де …` followed by its key in «»: `таска про прибирання застарілих метрик Facebook «AT-10309»`. The name says in plain Ukrainian what the task changes for the product, not how, so someone outside the code understands it. It comes from the Jira summary, the PR title and the session, with no code identifiers or field names: `[BE] fb page_impressions_unique (old)` becomes `таска про прибирання застарілих метрик Facebook`, `Seo canonical id from forebiden site group` becomes `таска про SEO-тег canonical на сайтах Amomama`. When those sources don't make the meaning clear, read the ticket with `getJiraIssue`.
+Every task is named literally `таска про …` or `таска де …` followed by its key in «»: `таска про прибирання застарілих метрик Facebook «AT-10309»`. The name says in plain Ukrainian what the task changes for the product, not how, so someone outside the code understands it. It comes from the Jira summary, the PR title and the session, with no code identifiers or field names: `[BE] fb page_impressions_unique (old)` becomes `таска про прибирання застарілих метрик Facebook`, `Seo canonical id from forebiden site group` becomes `таска про SEO-тег canonical на сайтах Amomama`. When those sources don't make the meaning clear, read the ticket with `getJiraIssue`.
 
-What happened is told in dev slang with anglicisms: пофіксив, змерджив, задеплоїв, зарев'ював, запушив, апрув, рев'ю. It stays free of code identifiers and tool names too: «згенерував порівняння API до і після PR», not «swagger diff через oasdiff». Other people's actions name no one: «змерджено в stage», «отримав апрув», «отримав коментарі в рев'ю», «задеплоєно». Jira status changes read as where the task got to: «у Ready for Testing».
+Updates are in first person and dev slang with anglicisms, told as my task's progress even when someone else did the step: пофіксив, змерджив в stage, отримав апрув, задеплоїв, зарев'ював, перевів у Ready for Testing. They stay free of code identifiers and tool names: «згенерував порівняння API до і після PR», not «swagger diff через oasdiff».
 
-The today section starts with the lines for what already happened today, then every in-progress task not yet named in the today section: each In Progress task on its own line, and the In Review and Ready for Testing tasks grouped into one line per status.
+The today section starts with the lines for what already happened today, then every in-progress task not yet named in the today section: In Progress tasks ending with «продовжую», In Review tasks on one line ending with «на рев'ю», Ready for Testing tasks on one line ending with «на тестуванні».
