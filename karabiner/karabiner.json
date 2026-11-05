@@ -64,9 +64,17 @@
                         ]
                     },
                     {
-                        "description": "Cmd+K → Close Window (Cmd+W)",
+                        "description": "Cmd+K → Close Window (Cmd+W) except in Kitty",
                         "manipulators": [
                             {
+                                "conditions": [
+                                    {
+                                        "bundle_identifiers": [
+                                            "net.kovidgoyal.kitty"
+                                        ],
+                                        "type": "frontmost_application_unless"
+                                    }
+                                ],
                                 "from": {
                                     "key_code": "k",
                                     "modifiers": {
