@@ -58,7 +58,7 @@ In the main conversation with the user, you are the orchestrator: your context i
 
 `docker-compose` is for local development only. It is usually not used for deployment.
 
-- Always serve user-facing local development servers, including Docker-published host ports, on this host's tailnet address and give matching `http://<address>:<port>` URLs rather than localhost, because I develop over SSH from the tailnet. The address differs per machine: get it with `tailscale ip -4`, and if the host has none, ask. When `ip -4 -o addr` doesn't list that address, tailscaled runs in userspace networking mode and there is nothing to bind it to: bind to `127.0.0.1`, because tailscaled proxies inbound tailnet connections to the same port on `127.0.0.1`. On such a host every `127.0.0.1` port is reachable from the tailnet, so databases and internal services get no host port there. Keep databases, internal services, and isolated automated tests private, including backend-only test dependencies.
+- Always bind user-facing local development servers, including Docker-published host ports, to this host's tailnet address and give matching `http://<address>:<port>` URLs rather than localhost, because I develop over SSH from the tailnet. The address differs per machine: get it with `ip -4 -o addr show to 10.10.0.0/24`, and if the host has none, ask. Keep databases, internal services, and isolated automated tests private, including backend-only test dependencies.
 
 Every service's Dockerfile has distinct named stages:
 
