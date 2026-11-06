@@ -6,20 +6,20 @@ disable-model-invocation: true
 
 # Daily
 
-Draft my standup update: what happened to my tasks on the previous working day and today. The previous working day is yesterday, or Friday when today is Monday. Gather the four sources, then write the text.
+Draft my standup update: what happened to my tasks on the previous working day and today. The previous working day is yesterday, or Friday when today is Monday. The weekend between them stays out of the standup, because the first section speaks for Friday alone: the scripts print only the previous working day and today, and Jira items dated Saturday or Sunday are dropped. Gather the four sources, then write the text.
 
 `getWorkActivity` takes local-time ISO datetimes with the offset from `date +%z` (e.g. `2026-11-04T00:00:00+02:00`), because a bare `YYYY-MM-DD` is read as UTC and shifts the day by the offset. JQL rejects offsets and takes `"YYYY-MM-DD HH:mm"`, read in my Jira timezone.
 
 ## 1. Claude sessions
 
-`python3 "<this skill's folder>/scripts/sessions.py"` prints every session from the previous working day 00:00 to now, grouped by day: project, branch, session titles, my prompts, commits (including those made by subagents), PR links and Claude's last reply. Sessions about my own tooling or personal projects (dotfiles, nvim, kitty, food tracking) don't go into the standup; questions that produced no work (a quick "how much does X cost") don't either.
+`python3 "<this skill's folder>/scripts/sessions.py"` prints every session on the previous working day and today, grouped by day: project, branch, session titles, my prompts, commits (including those made by subagents), PR links and Claude's last reply. Sessions about my own tooling or personal projects (dotfiles, nvim, kitty, food tracking) don't go into the standup; questions that produced no work (a quick "how much does X cost") don't either.
 
 ## 2. Jira
 
 Site `cloudId: "https://amomobile.atlassian.net"`, four calls:
 
 - What I touched: `getWorkActivity` with `activity: "all"`, `types: "jira"`, `from` at the previous working day 00:00 and no `to`, `itemsPerSection: "50"`.
-- Status changes on my tasks, by anyone, once per section so each change lands on its day: `searchJiraIssuesUsingJql` with `(assignee = currentUser() OR status CHANGED BY currentUser() DURING (<window>)) AND status CHANGED DURING (<window>)`, where `<window>` is `"<prev day> 00:00", "<today> 00:00"` for the previous day; for today use `AFTER startOfDay()` in place of both `DURING (<window>)`. Fields `summary`, `status`. The result carries neither the target status nor who moved it, so the current status stands in for the target.
+- Status changes on my tasks, by anyone, once per section so each change lands on its day: `searchJiraIssuesUsingJql` with `(assignee = currentUser() OR status CHANGED BY currentUser() DURING (<window>)) AND status CHANGED DURING (<window>)`, where `<window>` is `"<prev day> 00:00", "<day after prev day> 00:00"` for the previous day; for today use `AFTER startOfDay()` in place of both `DURING (<window>)`. Fields `summary`, `status`. The result carries neither the target status nor who moved it, so the current status stands in for the target.
 - In progress: `searchJiraIssuesUsingJql` with `assignee = currentUser() AND statusCategory = "In Progress" ORDER BY updated DESC`, fields `summary`, `status`. The category covers In Progress, In Review and Ready for Testing.
 
 ## 3. GitHub
@@ -30,7 +30,7 @@ Anything said about a PR goes only as far as this output confirms. Sessions show
 
 ## 4. Google Calendar
 
-`python3 "<this skill's folder>/scripts/meetings.py"` prints my meetings from the previous working day through the end of today, grouped by day, without all-day events and events I declined. When it exits with "not authorized", write the text without meetings and say so in one line under the fence.
+`python3 "<this skill's folder>/scripts/meetings.py"` prints my meetings on the previous working day and today, grouped by day, without all-day events and events I declined. When it exits with "not authorized", write the text without meetings and say so in one line under the fence.
 
 ## Text
 

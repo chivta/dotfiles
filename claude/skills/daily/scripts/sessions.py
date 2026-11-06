@@ -36,6 +36,10 @@ def previous_working_day(today):
     return day
 
 
+def reported_days(today):
+    return previous_working_day(today), today
+
+
 def local_time(timestamp):
     return datetime.fromisoformat(timestamp.replace("Z", "+00:00")).astimezone()
 
@@ -78,7 +82,7 @@ def new_day():
     return {"start": None, "end": None, "prompts": [], "commits": [], "prs": [], "reply": None}
 
 
-def read_transcript(path, session_id, start, days, meta, is_subagent):
+def read_transcript(path, session_id, reported, days, meta, is_subagent):
     pending_commits = {}
     with open(path, encoding="utf-8") as transcript:
         for raw in transcript:
@@ -94,7 +98,7 @@ def read_transcript(path, session_id, start, days, meta, is_subagent):
             if "timestamp" not in record:
                 continue
             moment = local_time(record["timestamp"])
-            if moment < start:
+            if moment.date() not in reported:
                 continue
             day = days[(moment.date(), session_id)]
             if not is_subagent:
@@ -128,18 +132,19 @@ def read_transcript(path, session_id, start, days, meta, is_subagent):
 
 def main():
     now = datetime.now().astimezone()
-    start = datetime.combine(previous_working_day(now.date()), time.min).astimezone()
+    reported = reported_days(now.date())
+    start = datetime.combine(reported[0], time.min).astimezone()
     current_session = os.environ.get("CLAUDE_CODE_SESSION_ID")
     days = defaultdict(new_day)
     meta = defaultdict(dict)
 
     for path in PROJECTS_DIR.glob("*/*.jsonl"):
         if path.stem != current_session and path.stat().st_mtime >= start.timestamp():
-            read_transcript(path, path.stem, start, days, meta, is_subagent=False)
+            read_transcript(path, path.stem, reported, days, meta, is_subagent=False)
     for path in PROJECTS_DIR.glob("*/*/subagents/*.jsonl"):
         session_id = path.parent.parent.name
         if session_id != current_session and path.stat().st_mtime >= start.timestamp():
-            read_transcript(path, session_id, start, days, meta, is_subagent=True)
+            read_transcript(path, session_id, reported, days, meta, is_subagent=True)
 
     print(f"# Claude Code sessions {start:%Y-%m-%d %H:%M} → {now:%Y-%m-%d %H:%M}")
     current_date = None

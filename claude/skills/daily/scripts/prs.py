@@ -4,7 +4,7 @@ import subprocess
 from collections import defaultdict
 from datetime import datetime, time
 
-from sessions import local_time, previous_working_day
+from sessions import local_time, reported_days
 
 ORG = "amomama"
 SEARCHES = ("author:@me", "reviewed-by:@me", "review-requested:@me")
@@ -79,7 +79,8 @@ def pr_events(pr, start, me):
 
 def main():
     now = datetime.now().astimezone()
-    start = datetime.combine(previous_working_day(now.date()), time.min).astimezone()
+    reported = reported_days(now.date())
+    start = datetime.combine(reported[0], time.min).astimezone()
     prs = {}
     me = None
     for qualifier in SEARCHES:
@@ -90,7 +91,8 @@ def main():
     for pr in prs.values():
         for timestamp, text in pr_events(pr, start, me):
             moment = local_time(timestamp)
-            days[moment.date()][pr["url"]].append((moment, text))
+            if moment.date() in reported:
+                days[moment.date()][pr["url"]].append((moment, text))
 
     print(f"# GitHub PRs in {ORG} {start:%Y-%m-%d %H:%M} → {now:%Y-%m-%d %H:%M}")
     for day in sorted(days):

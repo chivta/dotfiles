@@ -10,7 +10,7 @@ import webbrowser
 from datetime import datetime, time, timedelta
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
-from sessions import local_time, previous_working_day
+from sessions import local_time, reported_days
 
 KEYCHAIN_SERVICE = "daily-skill-google-calendar"
 KEYCHAIN_ACCOUNT = "oauth"
@@ -125,12 +125,15 @@ def main():
         authorize(sys.argv[2])
         return
     now = datetime.now().astimezone()
-    start = datetime.combine(previous_working_day(now.date()), time.min).astimezone()
+    reported = reported_days(now.date())
+    start = datetime.combine(reported[0], time.min).astimezone()
     end = datetime.combine(now.date() + timedelta(days=1), time.min).astimezone()
     print(f"# Meetings {start:%Y-%m-%d} → {now:%Y-%m-%d}")
     current_date = None
     for event in filter(is_meeting, list_events(start, end)):
         begin = local_time(event["start"]["dateTime"])
+        if begin.date() not in reported:
+            continue
         finish = local_time(event["end"]["dateTime"])
         if begin.date() != current_date:
             current_date = begin.date()
