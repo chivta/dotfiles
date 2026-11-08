@@ -17,8 +17,13 @@ opt.undofile = true
 opt.updatetime = UPDATE_TIME_MS
 opt.confirm = true
 
--- Yank and put use the macOS clipboard. Deletes skip it (see remap.lua).
+-- Yank and put use the system clipboard. Deletes skip it (see remap.lua).
+-- Over SSH that is the local terminal's clipboard via OSC 52, forced because
+-- unnamedplus turns off nvim's own OSC 52 detection.
 opt.clipboard = "unnamedplus"
+if vim.env.SSH_TTY then
+  vim.g.clipboard = "osc52"
+end
 
 opt.ignorecase = true
 opt.smartcase = true
