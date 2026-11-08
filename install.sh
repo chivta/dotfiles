@@ -11,7 +11,7 @@ set -eu
 DOT="$(cd "$(dirname "$0")" && pwd)"
 TPM_DIR="$HOME/.tmux/plugins/tpm"
 TPM_REPO="https://github.com/tmux-plugins/tpm"
-ZITTY_VERSION="v0.1.1"
+ZITTY_VERSION="v0.1.2"
 ZITTY_DIR="$HOME/.local/share/zitty"
 ZITTY_URL="https://github.com/chivta/zitty/archive/refs/tags/$ZITTY_VERSION.tar.gz"
 # zmx upgrades kill every running session, so it is pinned and never auto-upgraded
