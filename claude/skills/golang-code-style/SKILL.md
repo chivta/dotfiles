@@ -24,7 +24,7 @@ Never `if site, err := siteRepository.GetSite(ctx, siteID); err != nil {`. On it
 
 ## Locality of behaviour over short functions
 
-When logic reads as one flow — get data, parse it, normalize it, act on it — keep it in one function, however long. A reviewer then reads it once, top to bottom; split into three-line helpers, the same flow makes them jump between definitions and rebuild the order in their head. Extract a function only when it is called from several places, or when its name says everything and nobody needs to open it, such as `splitList` or `parseSiteIDs`. When the linter's length check objects, put `//nolint:funlen` on the function instead of splitting it.
+When logic reads as one flow — get data, parse it, normalize it, act on it — split it only at step boundaries: an extracted function holds one whole step, such as parsing the input or resolving sites into distributions, and the caller lists the steps in the order they run. A three-line helper that cuts a step into pieces makes the reviewer jump between definitions and rebuild the order in their head; extract smaller pieces only when they are called from several places, or when the name says everything and nobody needs to open them, such as `splitList`. Keep functions within `funlen` by splitting at the next step boundary.
 
 A CLI that invalidates CloudFront distributions, given directly or looked up by site ID or domain. Before, the flow is scattered across helpers of a few lines each:
 
@@ -60,12 +60,21 @@ func newSiteService() (*services.SiteService, error)                            
 func newCloudFrontCache(ctx context.Context) (*cache.CloudFrontCache, error)                { ... }
 ```
 
-After, the same flow sits in main in the order it runs, and `unique` became a set inside the loop that already walks the distributions:
+After, main runs the steps in order — parse, wire the DB, resolve sites into distributions, wire CloudFront, invalidate. Parsing and resolution are functions that each hold their whole step, and `unique` became a set inside the loop that already walks the distributions:
 
 ```go
-//nolint:funlen
 func main() {
     ...
+    flag.Parse()
+    ...
+    siteIDs, err := parseSiteIDs(*siteIDList)
+    if err != nil {
+        log.Fatal(err)
+    }
+    distributions := splitList(*distributionList)
+    domains := splitList(*domainList)
+    ctx := context.Background()
+
     if len(siteIDs) > 0 || len(domains) > 0 {
         var dbCfg dbConfig
         if err := cleanenv.ReadEnv(&dbCfg); err != nil {
@@ -77,22 +86,11 @@ func main() {
         siteRepository := repositories.NewSiteRepository(db)
         settingsRepository := repositories.NewSettingsRepository(db, repositories.NewVariableRepository(db))
 
-        var sites []*models.Site
-        for _, siteID := range siteIDs {
-            site, err := siteRepository.GetSite(ctx, uint(siteID))
-            ...
-            sites = append(sites, site)
+        siteDistributions, err := resolveDistributions(ctx, siteRepository, settingsRepository, siteIDs, domains)
+        if err != nil {
+            log.Fatal(err)
         }
-        for _, domain := range domains {
-            site, err := siteRepository.GetSiteBySlug(ctx, domain)
-            ...
-            sites = append(sites, site)
-        }
-        for _, site := range sites {
-            settings, err := settingsRepository.FindBySiteID(ctx, site.ID)
-            ...
-            distributions = append(distributions, settings.Distribution)
-        }
+        distributions = append(distributions, siteDistributions...)
     }
 
     var cfCfg cloudFrontConfig
@@ -109,5 +107,38 @@ func main() {
             ...
         }
     }
+}
+
+func parseSiteIDs(list string) ([]uint64, error) { ... }
+func splitList(list string) []string            { ... }
+
+func resolveDistributions(
+    ctx context.Context,
+    siteRepository *repositories.SiteRepository,
+    settingsRepository *repositories.SettingsRepository,
+    siteIDs []uint64,
+    domains []string,
+) ([]string, error) {
+    var sites []*models.Site
+    for _, siteID := range siteIDs {
+        site, err := siteRepository.GetSite(ctx, uint(siteID))
+        if err != nil {
+            return nil, fmt.Errorf("site %d: siteRepository.GetSite failed: %w", siteID, err)
+        }
+        sites = append(sites, site)
+    }
+    for _, domain := range domains {
+        site, err := siteRepository.GetSiteBySlug(ctx, domain)
+        ...
+        sites = append(sites, site)
+    }
+
+    distributions := make([]string, 0, len(sites))
+    for _, site := range sites {
+        settings, err := settingsRepository.FindBySiteID(ctx, site.ID)
+        ...
+        distributions = append(distributions, settings.Distribution)
+    }
+    return distributions, nil
 }
 ```
