@@ -72,13 +72,13 @@ Neovim 0.12 defaults, not remapped. Active in any buffer with a language server 
 | `]d`, `[d` | n | next, previous diagnostic |
 | `<leader>uh` | n | toggle inlay hints (custom, `after/plugin/lsp.lua`) |
 
-## Completion and AI suggestions
+## Completion
 
-Keys follow VSCode. `<Tab>` tries each action in order: accept the menu item, accept the minuet ghost text, jump to the next snippet placeholder, insert a tab.
+Keys follow VSCode. `<Tab>` tries each action in order: accept the menu item, jump to the next snippet placeholder, insert a tab.
 
 | Keys | Mode | Action | Defined in |
 |---|---|---|---|
-| `<Tab>` | i | accept menu item, else minuet suggestion, else next snippet placeholder, else tab | `after/plugin/blink.lua` |
+| `<Tab>` | i | accept menu item, else next snippet placeholder, else tab | `after/plugin/blink.lua` |
 | `<CR>` | i | accept menu item, else newline | blink enter preset |
 | `<Up>`, `<Down>` | i | previous, next item (blocked by hardtime when no menu is open) | blink enter preset |
 | `<C-n>`, `<C-p>` | i | next, previous item | blink enter preset |
@@ -88,8 +88,6 @@ Keys follow VSCode. `<Tab>` tries each action in order: accept the menu item, ac
 | `<C-b>`, `<C-f>` | i | scroll docs popup | blink enter preset |
 | `<C-k>` | i | signature help | blink enter preset |
 | `<S-Tab>` | i | previous snippet placeholder | blink enter preset |
-| `<C-g>` | i | next minuet suggestion | `after/plugin/minuet.lua` |
-| `<leader>ua` | n | toggle minuet auto-trigger in the buffer | `after/plugin/minuet.lua` |
 
 ## Treesitter text objects
 
@@ -158,7 +156,6 @@ Defined in `after/plugin/codecompanion.lua`.
 | Keys | Action | Defined in |
 |---|---|---|
 | `<leader>uh` | inlay hints | `after/plugin/lsp.lua` |
-| `<leader>ua` | AI suggestions (minuet auto-trigger, per buffer) | `after/plugin/minuet.lua` |
 | `<leader>uH` | hardtime | `after/plugin/trainers.lua` |
 | `<leader>up` | precognition motion hints | `after/plugin/trainers.lua` |
 

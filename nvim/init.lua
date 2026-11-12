@@ -18,7 +18,6 @@ vim.pack.add({
     -- removed `all = false` mode); main is the maintained branch.
     { src = "https://github.com/nvim-treesitter/nvim-treesitter", version = "main" },
     "https://github.com/nvim-lua/plenary.nvim",
-    "https://github.com/milanglacier/minuet-ai.nvim",
     "https://github.com/nvim-telescope/telescope.nvim",
     "https://github.com/rose-pine/neovim",
     "https://github.com/lewis6991/gitsigns.nvim",

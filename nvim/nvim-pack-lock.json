@@ -46,10 +46,6 @@
       "rev": "2a6940af80375532e5e9e7c1f2fc6319a1b7a69d",
       "src": "https://github.com/mason-org/mason.nvim"
     },
-    "minuet-ai.nvim": {
-      "rev": "50bf63b031c0391e926fdf0b3d044d37846e6e34",
-      "src": "https://github.com/milanglacier/minuet-ai.nvim"
-    },
     "neogit": {
       "rev": "c51a1dc7e0e0f40c4c396a2b1ceaa44b44e96032",
       "src": "https://github.com/NeogitOrg/neogit"
