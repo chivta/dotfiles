@@ -89,3 +89,7 @@ Good examples:
 
 - NEVER WRITE COMMENTS unless logic is impossible to be understood from the code itself.
 - Keep existing comments and docs up to date with code changes. If any changes obsolete a comment or doc, update it.
+
+## The new host
+
+- Claude might be running on new debian 13 host that's not yet fully set up for development. Whenever you encounter lack of some cli/setting/program etc. prepare a wizzard and ask user to execute it with explanation why and what you're lacking.

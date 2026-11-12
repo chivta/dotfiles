@@ -1,1 +1,1 @@
-/Users/vlasenko.artem/.local/share/zitty/current/zitty.py
+/home/arvlas/.local/share/zitty/current/zitty.py
