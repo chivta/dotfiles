@@ -1,6 +1,7 @@
 ## General Guidance
 
 - Follow YAGNI (You Aren't Gonna Need It) principle unless told otherwise.
+- Implement only the behaviour the task names. A feature, option, status, field, endpoint, fallback or setting the task doesn't name is out of scope even when it looks useful; list it at the end of your report as a suggestion instead.
 - Don't be scared to propose radical changes if they can meaningfully benefit our work.
 - For any volatile information, always perform a web search before making assumptions. Volatile information includes:
   - Versions — language runtimes, libraries, tools; always verify the current LTS/stable release
