@@ -24,7 +24,7 @@ Never `if site, err := siteRepository.GetSite(ctx, siteID); err != nil {`. On it
 
 ## Locality of behaviour over short functions
 
-When logic reads as one flow — get data, parse it, normalize it, act on it — split it only at step boundaries: an extracted function holds one whole step, such as parsing the input or resolving sites into distributions, and the caller lists the steps in the order they run. A three-line helper that cuts a step into pieces makes the reviewer jump between definitions and rebuild the order in their head; extract smaller pieces only when they are called from several places, or when the name says everything and nobody needs to open them, such as `splitList`. Keep functions within `funlen` by splitting at the next step boundary.
+When logic reads as one flow — get data, parse it, normalize it, act on it — split it only at step boundaries: an extracted function holds one whole step, such as resolving sites into distributions, and the caller lists the steps in the order they run. Keep functions within `funlen` by splitting at the next step boundary. A helper that does a piece of a step makes the reviewer jump between definitions and rebuild the order in their head, so create one only when it has several callers, like `splitList` with three; a piece with one caller, like parsing the site IDs of one flag, stays inline at that caller.
 
 A CLI that invalidates CloudFront distributions, given directly or looked up by site ID or domain. Before, the flow is scattered across helpers of a few lines each:
 
@@ -60,16 +60,20 @@ func newSiteService() (*services.SiteService, error)                            
 func newCloudFrontCache(ctx context.Context) (*cache.CloudFrontCache, error)                { ... }
 ```
 
-After, main runs the steps in order — parse, wire the DB, resolve sites into distributions, wire CloudFront, invalidate. Parsing and resolution are functions that each hold their whole step, and `unique` became a set inside the loop that already walks the distributions:
+After, main runs the steps in order — parse, wire the DB, resolve sites into distributions, wire CloudFront, invalidate. Resolution is one function holding its whole step, site-ID parsing is inline in main, `splitList` stays a helper for its three call sites, and `unique` became a set inside the loop that already walks the distributions:
 
 ```go
 func main() {
     ...
     flag.Parse()
     ...
-    siteIDs, err := parseSiteIDs(*siteIDList)
-    if err != nil {
-        log.Fatal(err)
+    var siteIDs []uint64
+    for _, rawSiteID := range splitList(*siteIDList) {
+        siteID, err := strconv.ParseUint(rawSiteID, 10, 64)
+        if err != nil {
+            log.Fatalf("invalid site-id %q: %v", rawSiteID, err)
+        }
+        siteIDs = append(siteIDs, siteID)
     }
     distributions := splitList(*distributionList)
     domains := splitList(*domainList)
@@ -109,8 +113,7 @@ func main() {
     }
 }
 
-func parseSiteIDs(list string) ([]uint64, error) { ... }
-func splitList(list string) []string            { ... }
+func splitList(list string) []string { ... }
 
 func resolveDistributions(
     ctx context.Context,
