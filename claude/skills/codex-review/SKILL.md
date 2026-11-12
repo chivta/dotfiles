@@ -68,7 +68,9 @@ Findings ordered by impact, each as: `path:line` — the problem — the concret
 ```xml
 <task>
 Review `git diff <SHA>` (this branch's changes since it left <BASE>, uncommitted ones included) and the untracked files in `git status --short` against the business context below. Read the surrounding code to trace how data actually flows.
-Check whether the change does what the tickets ask: requirements missing or partly implemented, requirements misread, behaviour that contradicts a comment, the epic or a linked ticket, edge cases the context names or implies that the code mishandles, and changes nobody asked for. Where a later comment disagrees with the description, the comment wins.
+Check whether the change does what the tickets ask: requirements missing or partly implemented, requirements misread, behaviour that contradicts a comment, the epic or a linked ticket, and edge cases the context names or implies that the code mishandles. Where a later comment disagrees with the description, the comment wins.
+Then check the opposite direction: every business behaviour the diff adds that no requirement asks for, such as an extra feature, option, status, field, endpoint, fallback, setting, or handling of a case the context never mentions. Mark each one unnecessary, because only what the tickets ask for ships: every extra is code to maintain and behaviour nobody signed off on. Code a requirement can't be built without (plumbing, the refactors it forces, tests) is not a feature and stays off this list.
+Last, suggest lines the author can add to their task prompts or CLAUDE.md so the coding agent stops adding such extras. Read ~/.claude/CLAUDE.md and the repo's CLAUDE.md and AGENTS.md first; where a rule there already forbids an extra, quote it and suggest sharper wording that would have caught this case.
 Code style is out of scope; a separate review covers it.
 </task>
 
@@ -81,13 +83,14 @@ Cite for every finding the requirement (ticket key and a quote) and the path:lin
 </grounding_rules>
 
 <structured_output_contract>
-1. Requirements checklist: each requirement from the context, marked done, partial or missing, with path:line.
+1. Requirements checklist: each requirement from the context, marked done, partial or missing, with path:line; then each business behaviour no requirement asks for, marked unnecessary, with path:line and what it adds.
 2. Findings ordered by severity, each as: requirement — `path:line` — what is wrong — the concrete change.
 3. Questions the context leaves open for the ticket author.
+4. Prompt additions: each suggested line ready to paste, with the unnecessary items it would have prevented. Omit the section when nothing is unnecessary.
 No summary of the diff.
 </structured_output_contract>
 ```
 
 ## 4. Report
 
-Codex is sometimes wrong, so open each finding's path:line and drop the ones that don't hold. Report two sections, Code and Business, most severe first, each finding with its `path:line`; from the business checklist keep only partial and missing items, and pass the open questions on as they are. Leave the code unchanged; the user picks what to fix.
+Codex is sometimes wrong, so open each finding's path:line and drop the ones that don't hold. Report two sections, Code and Business, most severe first, each finding with its `path:line`; from the business checklist keep only partial, missing and unnecessary items, and pass the open questions and prompt additions on as they are. Leave the code unchanged; the user picks what to fix.
