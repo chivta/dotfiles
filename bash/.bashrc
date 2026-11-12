@@ -28,7 +28,11 @@ case "$(uname -s)" in
 
         alias ll='ls -la --color=auto'
         alias ls='ls --color=auto'
-        alias update='sudo pacman -Syu'
+        if command -v pacman >/dev/null 2>&1; then
+            alias update='sudo pacman -Syu'
+        elif command -v apt-get >/dev/null 2>&1; then
+            alias update='sudo apt update && sudo apt upgrade'
+        fi
         alias virst=virsh
         alias hyperctl='hyprctl'
         alias lg='looking-glass-client -F'
@@ -52,19 +56,21 @@ export KUBECONFIG="$HOME/.kube/config"
 # fish sources only the top-level `alias` lines of this file, so shared aliases
 # must stay one-line `alias name='...'` definitions.
 # fish mirrors this guarded alias in config.fish
-command -v claude-wrap >/dev/null && alias claude='claude-wrap'
+#command -v claude-wrap >/dev/null && alias claude='claude-wrap'
+alias c2='CLAUDE_CONFIG_DIR="$HOME/.claude2" claude'
 alias claude2='CLAUDE_CONFIG_DIR="$HOME/.claude2" claude'
-alias ccc2='CLAUDE_CONFIG_DIR="$HOME/.claude2" claude --continue'
-alias cc2='CLAUDE_CONFIG_DIR="$HOME/.claude2" claude'
-alias diffthing='diffthing --llm codex --offline'
+alias cc2='CLAUDE_CONFIG_DIR="$HOME/.claude2" claude --continue'
+alias c2='CLAUDE_CONFIG_DIR="$HOME/.claude2" claude'
+alias cr2='CLAUDE_CONFIG_DIR="$HOME/.claude2" claude --resume'
 alias c='claude'
-alias cc='claude'
-alias ccc='claude --continue'
+alias cr='claude --resume'
+alias cc='claude --continue'
 which docker-compose && alias docker-compose='docker compose'
 alias dc='docker compose'
 alias d='docker'
+alias diffthing='diffthing --llm codex --offline'
 alias g='git'
-alias zsm='zmx-session-manager'
+# alias zsm='zmx-session-manager'
 alias k='kubectl'
 alias ks='kubectl'
 alias tf='terraform'

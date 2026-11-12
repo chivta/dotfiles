@@ -2,17 +2,13 @@
 -- (lsp/*.lua on the runtimepath), overrides live in this config's lsp/ dir.
 -- Keymaps are the 0.12 defaults (grn, gra, grr, gri, grt, grx, gO, K) plus
 -- <leader>uh to toggle inlay hints.
--- Copilot ghost text comes from the copilot LSP through built-in inline
--- completion: <Tab> accepts (wired in blink.lua), <C-g> next suggestion,
--- <leader>ua toggle. Sign in once with :LspCopilotSignIn.
-local SERVERS = { "gopls", "vtsls", "lua_ls", "copilot" }
+local SERVERS = { "gopls", "vtsls", "lua_ls" }
 
 -- Mason package names, installed on startup when missing.
 local TOOLS = {
   "gopls",
   "vtsls",
   "lua-language-server",
-  "copilot-language-server",
   "delve",
   "gotestsum",
   "gofumpt",
@@ -39,10 +35,3 @@ vim.lsp.enable(SERVERS)
 vim.keymap.set("n", "<leader>uh", function()
   vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
 end, { desc = "Toggle inlay hints" })
-
-vim.lsp.inline_completion.enable()
-
-vim.keymap.set("i", "<C-g>", vim.lsp.inline_completion.select, { desc = "Next AI suggestion" })
-vim.keymap.set("n", "<leader>ua", function()
-  vim.lsp.inline_completion.enable(not vim.lsp.inline_completion.is_enabled())
-end, { desc = "Toggle AI suggestions" })

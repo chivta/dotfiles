@@ -17,3 +17,6 @@ fish/fish_variables
 
 # install.sh links these from the zitty release
 kitty/zitty*
+
+# Lists company infrastructure, so it stays on this machine
+claude/skills/investigate/

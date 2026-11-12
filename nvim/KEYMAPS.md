@@ -33,6 +33,7 @@ Consequences of the delete change: `ddp` no longer swaps lines and `xp` no longe
 | `<C-p>`, `<leader>pf` | n | find files (fff, frecency ranked) | `after/plugin/fff.lua` |
 | `<leader>ps` | n | grep project (fff) | `after/plugin/fff.lua` |
 | `<leader>pw` | n, x | grep word under cursor or selection (fff) | `after/plugin/fff.lua` |
+| `<C-l>` | fff picker | send matches (or the `<Tab>`-marked ones) to quickfix, then `]q` / `[q` walk them | `after/plugin/fff.lua` |
 | `<leader>pv`, `-` | n | file explorer (oil), edit the listing then `:w` to apply | `lua/config/remap.lua`, `after/plugin/oil.lua` |
 | `<leader>a` | n | pin current file to harpoon | `after/plugin/harpoon.lua` |
 | `<C-e>` | n | harpoon list, reorder or delete lines to edit it | `after/plugin/harpoon.lua` |
@@ -71,13 +72,13 @@ Neovim 0.12 defaults, not remapped. Active in any buffer with a language server 
 | `]d`, `[d` | n | next, previous diagnostic |
 | `<leader>uh` | n | toggle inlay hints (custom, `after/plugin/lsp.lua`) |
 
-## Completion and AI suggestions
+## Completion
 
-Keys follow VSCode. `<Tab>` tries each action in order: accept the menu item, accept the Copilot ghost text, jump to the next snippet placeholder, insert a tab.
+Keys follow VSCode. `<Tab>` tries each action in order: accept the menu item, jump to the next snippet placeholder, insert a tab.
 
 | Keys | Mode | Action | Defined in |
 |---|---|---|---|
-| `<Tab>` | i | accept menu item, else Copilot suggestion, else next snippet placeholder, else tab | `after/plugin/blink.lua` |
+| `<Tab>` | i | accept menu item, else next snippet placeholder, else tab | `after/plugin/blink.lua` |
 | `<CR>` | i | accept menu item, else newline | blink enter preset |
 | `<Up>`, `<Down>` | i | previous, next item (blocked by hardtime when no menu is open) | blink enter preset |
 | `<C-n>`, `<C-p>` | i | next, previous item | blink enter preset |
@@ -87,8 +88,6 @@ Keys follow VSCode. `<Tab>` tries each action in order: accept the menu item, ac
 | `<C-b>`, `<C-f>` | i | scroll docs popup | blink enter preset |
 | `<C-k>` | i | signature help | blink enter preset |
 | `<S-Tab>` | i | previous snippet placeholder | blink enter preset |
-| `<C-g>` | i | next Copilot suggestion | `after/plugin/lsp.lua` |
-| `<leader>ua` | n | toggle Copilot suggestions | `after/plugin/lsp.lua` |
 
 ## Treesitter text objects
 
@@ -157,7 +156,6 @@ Defined in `after/plugin/codecompanion.lua`.
 | Keys | Action | Defined in |
 |---|---|---|
 | `<leader>uh` | inlay hints | `after/plugin/lsp.lua` |
-| `<leader>ua` | Copilot suggestions | `after/plugin/lsp.lua` |
 | `<leader>uH` | hardtime | `after/plugin/trainers.lua` |
 | `<leader>up` | precognition motion hints | `after/plugin/trainers.lua` |
 

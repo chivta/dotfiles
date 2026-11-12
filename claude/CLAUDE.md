@@ -1,6 +1,7 @@
 ## General Guidance
 
 - Follow YAGNI (You Aren't Gonna Need It) principle unless told otherwise.
+- Implement only the behaviour the task names. A feature, option, status, field, endpoint, fallback or setting the task doesn't name is out of scope even when it looks useful; list it at the end of your report as a suggestion instead.
 - Don't be scared to propose radical changes if they can meaningfully benefit our work.
 - For any volatile information, always perform a web search before making assumptions. Volatile information includes:
   - Versions — language runtimes, libraries, tools; always verify the current LTS/stable release
@@ -16,16 +17,16 @@
 - When the codebase does the same thing in competing ways, follow the approach used in newer files (check file age with `git log`). In a small project, or when file age doesn't settle it, name the competing approaches and let the user choose.
 - In a legacy file, write new code the newer way even though it breaks from the surrounding code, then suggest migrating the whole file to it.
 - Migrations are immutable and should be treated like a commit rather than current state. Never delete or modify an existing migration (and its comments) that has likely already run in production (it's on origin/stage, origin/main or similar); add new migration(s) to change the schema instead.
-- Never touch production, live databases, remote servers. If a task requires remote access or production data, stop immediately and ask for instructions.
-- Input validated at system boundaries only (HTTP handlers, queue consumers). Internal functions trust their callers.
+- Never touch production, live databases, remote servers, except reading them through the `investigate` skill. If a task requires anything beyond that, stop immediately and ask for instructions.
+- Input validated at system boundaries only (HTTP handlers, queue consumers). Internal functions trust their callers. Never check validate twice.
 - Prefer named constants over hardcoded values. A magic number or string used even once should be a constant — it makes the intent visible, shows every place the value is used, and makes changes trivial.
 - API should be designed as simple and as universal as possible. Avoid special cases, exceptions, and workarounds. Prefer universal abstract endpoints coupling multiple business needs behind common interface.
+- Never add validation checks for cases that have no way to happen in production. If something didn't have a check don't add it unless we added something that could cause it.
 
 ## Common abbreviation
 
 - `dc` - docker-compose
 - `ks` - kubectl
-- `tf` - the fuck
 - `cc` - claude code (agent)
 - `rn` - right now
 
@@ -84,6 +85,7 @@ Good examples:
 
 - Make PR title the same as other PR titles in the repo.
 - Do not add description to PR, only leave link to another PR is it's a follow-up or directly related to it.
+- Never reply to review comments.
 
 ## Comments
 

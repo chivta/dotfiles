@@ -39,13 +39,11 @@
 	defaultBranch = main
 [push]
 	autoSetupRemote = true
+[pull]
+	rebase = true
+	merge = true
 
 # Per-machine settings (safe.directory, difftool, ...). Untracked; git skips
 # the include when the file is missing. Keep last so it overrides the above.
 [include]
 	path = config.local
-[credential]
-	helper = /usr/lib/git-core/git-credential-libsecret
-[pull]
-	rebase = true
-	merge = true

@@ -1,1 +1,0 @@
-/home/arvlas/.local/share/zitty/current/zitty_layout.py
