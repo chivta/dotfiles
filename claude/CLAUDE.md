@@ -17,7 +17,7 @@
 - When the codebase does the same thing in competing ways, follow the approach used in newer files (check file age with `git log`). In a small project, or when file age doesn't settle it, name the competing approaches and let the user choose.
 - In a legacy file, write new code the newer way even though it breaks from the surrounding code, then suggest migrating the whole file to it.
 - Migrations are immutable and should be treated like a commit rather than current state. Never delete or modify an existing migration (and its comments) that has likely already run in production (it's on origin/stage, origin/main or similar); add new migration(s) to change the schema instead.
-- Never touch production, live databases, remote servers. If a task requires remote access or production data, stop immediately and ask for instructions.
+- Never touch production, live databases, remote servers, except reading them through the `investigate` skill. If a task requires anything beyond that, stop immediately and ask for instructions.
 - Input validated at system boundaries only (HTTP handlers, queue consumers). Internal functions trust their callers. Never check validate twice.
 - Prefer named constants over hardcoded values. A magic number or string used even once should be a constant — it makes the intent visible, shows every place the value is used, and makes changes trivial.
 - API should be designed as simple and as universal as possible. Avoid special cases, exceptions, and workarounds. Prefer universal abstract endpoints coupling multiple business needs behind common interface.
