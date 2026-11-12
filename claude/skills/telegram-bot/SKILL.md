@@ -5,16 +5,15 @@ description: Preferred stack, defaults, and testing approach for Telegram bots i
 
 # Telegram bots
 
-Go style, layering, error wrapping, config, logging, shutdown, Dockerfile stages
-and CI/CD are already covered by CLAUDE.md and the `golang-conventions` skill.
+Go style and Dockerfile stages are already covered by the `golang-code-style`
+skill and CLAUDE.md.
 This file only covers what those get *wrong* for a bot, plus the telebot traps
 that do not show up until the bot is under load.
 
 ## Stack
 
 - **telebot v4** (`gopkg.in/telebot.v4`), long polling.
-- **SQLite, not Postgres.** This is a deliberate override: `golang-conventions`
-  says pgx/tern, and that is right for a service, wrong for a bot. A bot's state
+- **SQLite, not Postgres.** Postgres is right for a service, wrong for a bot. A bot's state
   is small and single-writer, and a personal bot is not worth a database server
   next to it. Use `modernc.org/sqlite` — pure Go, so `CGO_ENABLED=0` still
   yields a static binary — with `_pragma=busy_timeout(5000)&_pragma=journal_mode(WAL)`.
@@ -102,4 +101,4 @@ debugging time.
 
 ## Related
 
-`golang-conventions` for Go style.
+`golang-code-style` for Go style.
