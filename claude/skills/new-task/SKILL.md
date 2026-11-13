@@ -1,6 +1,6 @@
 ---
 name: new-task
-description: Start work on Jira tickets: find their project in ~/Projects, branch it from fresh stage, explain the tickets, plan the scope, then implement and trim to that plan.
+description: Start work on Jira tickets: find their project in ~/Projects, branch it from fresh stage, explain the tickets, plan the scope, then implement, trim and check against that plan.
 argument-hint: <JIRA-KEY> [JIRA-KEY...]
 disable-model-invocation: true
 ---
@@ -58,6 +58,8 @@ Write the plan to `.claude/<branch>.md` in the new directory. It is the scope th
 ````markdown
 # <keys>: <ticket summary>
 
+Base: `<the branch this one was cut from in step 3>`
+
 ## Requirements
 
 1. <KEY>: "<requirement quoted from the ticket, or from the later comment that changed it>"
@@ -77,9 +79,9 @@ Write the plan to `.claude/<branch>.md` in the new directory. It is the scope th
 - `<path from the repo root>` — R1
 ````
 
-Each test fails before the change and passes after it; where the area has no tests, name the command whose output shows the behaviour. Files lists every file the change touches, tests included. `~/.claude/hooks/scope-gate.py` reads that section and blocks Edit and Write on any other file in the worktree, so keep its `` - `path` `` line format.
+Each test fails before the change and passes after it; where the area has no tests, name the command whose output shows the behaviour. Files lists every file the change touches, tests included. `~/.claude/hooks/scope-gate.py` reads that section and blocks Edit and Write on any other file in the worktree, so keep its `` - `path` `` line format; `~/.claude/hooks/check-gate.py` reads the Base line.
 
-End with the plan's Files list and ask the user to approve or change the plan. Then give the branch and the directory, tell the user to run the command below themselves to move the session there, and print it last in its own code block so it copies cleanly:
+After the explanation, paste the whole plan into the chat and ask the user to approve or change it. Then give the branch and the directory, tell the user to run the command below themselves to move the session there, and print it last in its own code block so it copies cleanly:
 
 ```
 /cd <absolute path of the new directory>
@@ -87,10 +89,24 @@ End with the plan's Files list and ask the user to approve or change the plan. T
 
 ## 8. Implement
 
-After the user approves the plan, write its tests first and run them to see them fail, then write the code that makes them pass. The work is done when every command under Done passes: show the commands with their output and stop there.
+After the user approves the plan, write its tests first and run them to see them fail, then write the code that makes them pass. Building is done when every command under Done passes: show the commands with their output and write no more code for the plan.
 
 When a requirement turns out to need a file outside Files, add the file there with the requirement it serves; the hook always allows edits to the plan itself. A file no requirement needs stays untouched, however much it invites improvement.
 
 ## 9. Trim
 
-Once Done passes, give a fresh-context subagent the plan and the change: `git diff $(git merge-base <base> HEAD)` plus untracked files other than the plan, where `<base>` is `stage` or the base chosen in step 3. It maps every hunk to the requirement it serves, deletes the hunks that serve none, and reports hunks that break a requirement, quoting it. Fix those, adding code only where a quoted requirement asks for it, then rerun Done. Repeat on what changed since the previous round, three rounds at most; if the third round still deletes or reports something, stop and show the user what's left.
+Once Done passes, give a fresh-context subagent the plan and the change: `git diff $(git merge-base <base> HEAD)` plus untracked files other than the plan, where `<base>` is the plan's Base. It maps every hunk to the requirement it serves, deletes the hunks that serve none, and reports hunks that break a requirement, quoting it. Fix those, adding code only where a quoted requirement asks for it, then rerun Done. Repeat on what changed since the previous round, three rounds at most; whatever the third round still deletes or reports goes into the final report.
+
+## 10. Check
+
+After the trim, run five checks on the branch in this order, fixing what each one finds before starting the next:
+
+1. the `simplify` skill;
+2. the `code-review` skill with `high --fix`;
+3. the `security-review` skill;
+4. the Codex review: follow `~/.claude/skills/codex-review/SKILL.md` with the plan's ticket keys. That skill leaves fixes to the user; here you fix its findings yourself;
+5. the `run` skill, to see the change working.
+
+Fix every finding that holds. A finding that asks for behaviour no requirement in the plan names goes into the final report instead of the code, and so does each finding you dismiss, with the reason. Then rerun Done. `~/.claude/hooks/check-gate.py` blocks the hand-back until all five have run in this round.
+
+The final report is where the user's attention comes back, so it carries everything they need to decide on: what each check found and what was fixed, the dismissed findings, what the trim left open, and the Codex review's open questions.
