@@ -1,6 +1,6 @@
 ---
 name: new-task
-description: Start work on Jira tickets: find their project in ~/Projects, branch it from fresh stage, explain the tickets.
+description: Start work on Jira tickets: find their project in ~/Projects, branch it from fresh stage, explain the tickets, plan the scope, then implement and trim to that plan.
 argument-hint: <JIRA-KEY> [JIRA-KEY...]
 disable-model-invocation: true
 ---
@@ -49,10 +49,48 @@ The session name becomes the kitty tab title, so it has to be readable in a narr
 
 ## 6. Explain
 
-Invoke the `explain` skill on the tickets, reading the code in the new directory. Answer in chat; write nothing into the repo.
+Invoke the `explain` skill on the tickets, reading the code in the new directory. Answer in chat.
 
-End with the branch and the directory, then tell the user to run the command below themselves to move the session there, and print it last in its own code block so it copies cleanly:
+## 7. Plan the scope
+
+Write the plan to `.claude/<branch>.md` in the new directory. It is the scope the user approves before any code exists, so it holds only what the tickets ask for. It's a local file and stays out of every commit.
+
+````markdown
+# <keys>: <ticket summary>
+
+## Requirements
+
+1. <KEY>: "<requirement quoted from the ticket, or from the later comment that changed it>"
+
+## Tests
+
+- R1: `<test file>` `<test name>`: <what it asserts>
+
+## Done
+
+```sh
+<test, build and lint commands for this repo>
+```
+
+## Files
+
+- `<path from the repo root>` — R1
+````
+
+Each test fails before the change and passes after it; where the area has no tests, name the command whose output shows the behaviour. Files lists every file the change touches, tests included. `~/.claude/hooks/scope-gate.py` reads that section and blocks Edit and Write on any other file in the worktree, so keep its `` - `path` `` line format.
+
+End with the plan's Files list and ask the user to approve or change the plan. Then give the branch and the directory, tell the user to run the command below themselves to move the session there, and print it last in its own code block so it copies cleanly:
 
 ```
 /cd <absolute path of the new directory>
 ```
+
+## 8. Implement
+
+After the user approves the plan, write its tests first and run them to see them fail, then write the code that makes them pass. The work is done when every command under Done passes: show the commands with their output and stop there.
+
+When a requirement turns out to need a file outside Files, add the file there with the requirement it serves; the hook always allows edits to the plan itself. A file no requirement needs stays untouched, however much it invites improvement.
+
+## 9. Trim
+
+Once Done passes, give a fresh-context subagent the plan and the change: `git diff $(git merge-base <base> HEAD)` plus untracked files other than the plan, where `<base>` is `stage` or the base chosen in step 3. It maps every hunk to the requirement it serves, deletes the hunks that serve none, and reports hunks that break a requirement, quoting it. Fix those, adding code only where a quoted requirement asks for it, then rerun Done. Repeat on what changed since the previous round, three rounds at most; if the third round still deletes or reports something, stop and show the user what's left.
