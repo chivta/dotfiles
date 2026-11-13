@@ -14,6 +14,7 @@ BASE_LINE = re.compile(r"^Base: `([^`]+)`$")
 STATE_FILE = "claude-check-gate.json"
 TEMP_INDEX_PREFIX = "claude-check-gate-index-"
 MAX_BLOCKS = 3
+BELL = os.path.join(os.path.dirname(os.path.abspath(__file__)), "bell.sh")
 
 CODEX_MARKER = "codex-companion.mjs"
 CODEX_CHECK = "codex"
@@ -173,9 +174,11 @@ def main():
     try:
         out = handle(json.load(sys.stdin))
     except Exception:
-        return
+        out = None
     if out:
         print(json.dumps(out))
+    else:
+        subprocess.run([BELL])
 
 
 main()
