@@ -1,33 +1,25 @@
 ---
 name: new-task
-description: Start a development task in any project, from Jira keys or a description: branch it from its fresh base, explain the task, plan the scope, then implement, trim and check against that plan.
-argument-hint: <JIRA-KEY...> | <task description>
+description: Start a development task in any project from a description: branch it from its fresh base, explain it, plan the scope, then implement, trim and check against that plan.
+argument-hint: <task description>
 disable-model-invocation: true
 ---
 
 # New task
 
-Task: $ARGUMENTS. It is one task: one project, one branch.
+Task, in the user's words: $ARGUMENTS. It is one task: one project, one branch.
 
 ## 1. Read the task
 
-Jira keys such as `AT-10746`: fetch each with the Atlassian `getJiraIssue` tool, `cloudId: "https://amomobile.atlassian.net"`, `view: "evidence"` (it includes issue links; the umguide tools hold keys that aren't there). Read the comments with `listJiraIssueComments` when there are any, since requirements often change there.
-
-Anything else is the task in the user's words; read the pages it links, comments included.
+When the task links pages, read them, comments included, since requirements often change there.
 
 ## 2. Find the project
 
-A task in the user's words works on the git repo the session is in, unless it names another. Jira keys, or a session outside any repo, mean one of the git repos directly under `~/Projects`; sibling directories such as `cd-AT-10722-atlas` are extra worktrees of `cd`, and the project is `cd`. Pick it by:
-
-- Branches named after the ticket, its linked issues or its parent epic:
-  `for r in ~/Projects/*/; do git -C "$r" for-each-ref --format="$r %(refname:short)" refs/heads refs/remotes 2>/dev/null; done | grep -E 'AT-(10746|10651)'`
-- What the task describes against each candidate's README and CLAUDE.md. Summary tags like `[BE][CMS]` name the product area, not the repo: AT-10746 "[BE][CMS][Creative builder]..." lives in `amo_file`, not `cms`.
-
-Ask with AskUserQuestion when more than one repo stays plausible, when the tickets point to different repos, or when a branch for one of these tickets already exists (the user may want to reuse it).
+The project is the git repo the session is in, unless the task names another. Outside any repo, it's the git repo directly under `~/Projects` whose README and CLAUDE.md match the task; ask with AskUserQuestion when more than one stays plausible.
 
 ## 3. Branch from the fresh base
 
-The base is `stage` when origin has it, otherwise origin's default branch; in a repo without origin, it's the branch checked out now. Branch name: the ticket keys, if any, plus a 2–4 word English slug of the task, e.g. `AT-10746-gdrive-upload`, `AT-10801-AT-10802-video-retries`, `retry-failed-uploads`.
+The base is `stage` when origin has it, otherwise origin's default branch; in a repo without origin, it's the branch checked out now. Branch name: a 2–4 word English slug of the task, e.g. `retry-failed-uploads`.
 
 **Worktree container**, where the project root is a bare repo (`git -C <root> rev-parse --is-bare-repository` prints `true`; `amo_file` and `cms` are):
 
@@ -56,13 +48,13 @@ Invoke the `explain` skill on the task, reading the code in the new directory. A
 Write the plan to `.claude/<branch>.md` in the new directory. It is the scope the user approves before any code exists, so it holds only what the task asks for. It's a local file and stays out of every commit.
 
 ````markdown
-# <ticket keys, if any> <task summary>
+# <task summary>
 
 Base: `<the base from step 3>`
 
 ## Requirements
 
-1. <ticket key, or "Task">: "<requirement quoted from the ticket, the later comment that changed it, or the user's words>"
+1. "<requirement quoted from the task or a page it links>"
 
 ## Tests
 
@@ -104,7 +96,7 @@ After the trim, run five checks on the branch in this order, fixing what each on
 1. the `simplify` skill;
 2. the `code-review` skill with `high --fix`;
 3. the `security-review` skill;
-4. the Codex review: follow `~/.claude/skills/codex-review/SKILL.md` with the plan's ticket keys and its Base as the base branch. For a task without keys, the business review's context is the task in the user's words and the pages it links, verbatim. That skill leaves fixes to the user; here you fix its findings yourself;
+4. the Codex review: follow `~/.claude/skills/codex-review/SKILL.md` with the plan's Base as the base branch; the business review's context is the task in the user's words and the pages it links, verbatim. That skill leaves fixes to the user; here you fix its findings yourself;
 5. the `run` skill, to see the change working.
 
 Fix every finding that holds. A finding that asks for behaviour no requirement in the plan names goes into the final report instead of the code, and so does each finding you dismiss, with the reason. Then rerun Done. `~/.claude/hooks/check-gate.py` blocks the hand-back until all five have run in this round.
