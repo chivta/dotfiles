@@ -6,7 +6,7 @@ import shlex
 import sys
 
 MARKER_DIR = os.path.join(os.environ.get("TMPDIR") or "/tmp", "claude-investigate-gate")
-MCP_GATED = re.compile(r"^mcp__(vm-|vl-|claude_ai_Amo_ES__|amo-es__|plugin_sentry_sentry__)")
+MCP_GATED = re.compile(r"^mcp__(vm-|claude_ai_Amo_ES__|amo-es__|plugin_sentry_sentry__)")
 CLI_WORD = re.compile(r"\b(kubectl|aws)\b")
 SUBSHELL_CLI = re.compile(r"(\$\(|`|\()\s*(?:\S*/)?(kubectl|aws)\b")
 VAR_ASSIGN = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*=")

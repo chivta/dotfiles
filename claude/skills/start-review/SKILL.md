@@ -46,7 +46,7 @@ The session name becomes the kitty tab title, so it has to be readable in a narr
 
 ## 6. Explain
 
-Invoke the `explain` skill on the tickets and the PR together, reading the code in the checked-out directory. The change to explain is `git diff origin/<baseRefName>...HEAD` (three dots: only the PR's own commits). Cover what the ticket asks for and how the PR's data flow delivers it; open review threads from `reviews` and `comments` are context for what is still contested, not a verdict. This is the briefing before the review, so explain and don't judge; the review is the user's next prompt. Answer in chat; write nothing into the repo.
+Explain the tickets and the PR together, reading the code in the checked-out directory. The change to explain is `git diff origin/<baseRefName>...HEAD` (three dots: only the PR's own commits). Cover what the ticket asks for and how the PR's data flow delivers it; open review threads from `reviews` and `comments` are context for what is still contested, not a verdict. This is the briefing before the review, so explain and don't judge; the review is the user's next prompt. Answer in chat; write nothing into the repo.
 
 End with the branch and the directory, then tell the user to run the command below themselves to move the session there, and print it last in its own code block so it copies cleanly:
 
