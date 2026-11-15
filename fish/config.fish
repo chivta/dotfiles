@@ -1,6 +1,8 @@
 # Mirrors the exports in bash/.bashrc, which fish can't source
 set -gx GOPATH /opt/go-workspace
 fish_add_path --global --path --move $HOME/.local/bin $HOME/.local/npm/bin $HOME/.cargo/bin $HOME/.tfenv/bin $GOPATH/bin
+set -gx EDITOR nvim
+set -gx VISUAL nvim
 set -gx PAGER less
 set -gx LESS '-RF --mouse'
 set -gx DFT_BYTE_LIMIT 500000

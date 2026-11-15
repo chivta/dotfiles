@@ -44,6 +44,8 @@ esac
 # --- EXPORTS & PATHS ---
 # fish can't source this file; fish/config.fish repeats these values, keep them in sync.
 export PATH="$HOME/.local/bin:$HOME/.local/npm/bin:$HOME/.cargo/bin:$HOME/.tfenv/bin:$GOPATH/bin:$PATH"
+export EDITOR='nvim'
+export VISUAL='nvim'
 export PAGER='less'
 export LESS='-RF --mouse'
 # difft is git's diff.external, and it can spend minutes on one file (a 530KB
