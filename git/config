@@ -38,6 +38,8 @@
 
 [init]
 	defaultBranch = main
+[core]
+	hooksPath = ~/.config/git/hooks
 [push]
 	autoSetupRemote = true
 [pull]

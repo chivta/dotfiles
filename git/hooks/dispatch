@@ -1,0 +1,14 @@
+#!/bin/sh
+# core.hooksPath replaces every repo's .git/hooks, so each hook name links here
+# and passes on to the repo's own hook after the global checks.
+hook=$(basename "$0")
+
+if [ "$hook" = commit-msg ] && grep -qi '^co-authored-by:' "$1"; then
+  echo "commit-msg: Co-Authored-By trailers are not allowed; drop the line and commit again" >&2
+  exit 1
+fi
+
+local_hook="$(git rev-parse --git-common-dir)/hooks/$hook"
+if [ -x "$local_hook" ]; then
+  exec "$local_hook" "$@"
+fi
