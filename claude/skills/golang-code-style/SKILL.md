@@ -1,6 +1,6 @@
 ---
 name: golang-code-style
-description: Go/Golang code style — dependency wiring, if statements, and when to split a function. Use whenever writing, reviewing, or refactoring Go code.
+description: Go/Golang code style — dependency wiring, if statements, comments, and when to split a function. Use whenever writing, reviewing, or refactoring Go code.
 ---
 
 # Go style
@@ -21,6 +21,11 @@ if err != nil {
 ```
 
 Never `if site, err := siteRepository.GetSite(ctx, siteID); err != nil {`. On its own line the call reads as a step of the flow, and its results stay in scope for the code after the check. A single-value init such as `if err := cleanenv.ReadEnv(&cfg); err != nil` is fine.
+
+## Comments
+
+- NEVER WRITE COMMENTS unless logic is impossible to be understood from the code itself.
+- Keep existing comments and docs up to date with code changes. If any changes obsolete a comment or doc, update it.
 
 ## Locality of behaviour over short functions
 
