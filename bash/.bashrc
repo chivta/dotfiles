@@ -184,7 +184,10 @@ build_prompt() {
 # keyboard protocol on. Mouse moves and keys then reach bash as escape codes it doesn't
 # know, so it prints "M35;57;52M..." and rings the bell. Popping 99 keyboard levels
 # empties kitty's stack, which resets the flags however many levels the TUI pushed.
-INPUT_MODES_OFF='\e[?1000l\e[?1002l\e[?1003l\e[?1006l\e[<99u'
+# Also reset clipboard paste-event mode (5522), which claude-wrap enables. If a
+# wrapper is interrupted before cleanup, subsequent apps otherwise receive OSC
+# clipboard packets instead of ordinary pasted text.
+INPUT_MODES_OFF='\e[?1000l\e[?1002l\e[?1003l\e[?1006l\e[<99u\e[?5522l'
 
 PROMPT_COMMAND='build_prompt; printf "$INPUT_MODES_OFF"'
 
