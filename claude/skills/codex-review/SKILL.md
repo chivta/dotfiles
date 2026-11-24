@@ -23,9 +23,9 @@ for b in stage develop main master; do git rev-parse -q --verify origin/$b >/dev
 
 ## 2. Pack the ticket context
 
-Keys come from the arguments, else from the branch name (`AT-10801-AT-10802-video-retries` holds two). With no key, ask the user; if there is no ticket, run only the code review and say the business review was skipped.
+Keys come from the arguments, else from the branch name (`PROJ-101-PROJ-102-video-retries` holds two). With no key, ask the user; if there is no ticket, run only the code review and say the business review was skipped.
 
-Fetch with the Atlassian tools, `cloudId: "https://amomobile.atlassian.net"`, `view: "evidence"` (the umguide tools for keys that aren't there), and collect:
+Fetch with the Atlassian tools, `view: "evidence"`, and collect:
 
 - each ticket: summary, type, status, description, acceptance criteria, every text custom field, and all comments (`listJiraIssueComments`);
 - its parent epic, subtasks and every linked issue, with the same fields and comments;

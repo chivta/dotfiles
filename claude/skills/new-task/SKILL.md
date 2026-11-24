@@ -21,9 +21,9 @@ The project is the git repo the session is in, unless the task names another. Ou
 
 The base is `stage` when origin has it, otherwise origin's default branch; in a repo without origin, it's the branch checked out now. Branch name: a 2–4 word English slug of the task, e.g. `retry-failed-uploads`.
 
-**Worktree container**, where the project root is a bare repo (`git -C <root> rev-parse --is-bare-repository` prints `true`; `amo_file` and `cms` are):
+**Worktree container**, where the project root is a bare repo (`git -C <root> rev-parse --is-bare-repository` prints `true`):
 
-1. Update local `<base>`. If a worktree has it checked out (`git -C <root> worktree list`; in `cms` it's `cms/stage`), run `git -C <that worktree> pull --ff-only`; otherwise `git -C <root> fetch origin <base>:<base>`.
+1. Update local `<base>`. If a worktree has it checked out (`git -C <root> worktree list`), run `git -C <that worktree> pull --ff-only`; otherwise `git -C <root> fetch origin <base>:<base>`.
 2. `git -C <root> worktree add -b <branch> <root>/<dir> <base>`. `<dir>` names what the task is about in 1–3 kebab-case words with no ticket key, like `grok-video` or `upload-gdrive`, and must not exist yet.
 
 **Plain checkout**, any other repo:
