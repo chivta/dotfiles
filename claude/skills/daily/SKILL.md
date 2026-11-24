@@ -45,7 +45,6 @@ Ukrainian, one block with no blank lines, printed inside a ```text fence so it c
 Сьогодні:
 - розсилки задеплоєно
 - продовжую таску про ліміти API
-- на рев'ю превʼю статей і теги, на тестуванні пуші в Safari і фільтр по авторах
 - буде міт по релізу
 ```
 
@@ -53,7 +52,7 @@ On Monday the first header is «У п'ятницю:».
 
 Lines group work, not events. For each section, collect everything that happened to each ticket that day across all sources: work from sessions and commits, PR opened, reviews, fixes after review, merge into stage, Jira status changes, deploy; a session's or PR's branch or title usually names the ticket. Then join related things into one line: tickets of the same feature or area (one epic, one summary tag like `[Creative builder]`, one shared PR or branch), tickets with a similar update (merged, approved, in Ready for Testing, deployed), and work without a ticket that fed one (a design discussion that became the task). A small extra step of one ticket joins the shared update.
 
-From Jira alone, a ticket makes it into the text in two ways: I created it in the window (the `created` tag from `getWorkActivity`), said as «завів таску про …», or it was created earlier and moved into In Progress in the window, said as «взяв з беклога таску про …». Other edits to tickets (description, fields, sprint, a ticket still in Backlog) aren't standup news and stay out.
+A ticket or PR makes it into the text only through something I actually did: work in a session, a commit, a PR I opened, pushed to or reviewed, or a review or merge on my own PR. Jira adds status to such a line («…, тепер у Ready for Testing»); a change seen only in Jira (a status move, a created ticket, one pulled from the backlog, edited fields) isn't standup news, and neither is a PR where I'm only requested as a reviewer.
 
 Tasks are named short, by what unifies them, with no ticket keys: «таска по креейтів білдеру», «таска про атлас», «таски по метриках Facebook». The label comes from the summary tag, epic, branch or PR title, in words someone outside the code understands, with no code identifiers or field names. When those sources don't make the meaning clear, read the ticket with `getJiraIssue`.
 
@@ -61,4 +60,4 @@ Vary the wording the way a person talks: not every line starts with «таска
 
 Meetings go on the last line of each section and only say that they happened or will happen, with whom or about what: «мав міт з Богданом», «буде міт по RSOC». No times, and the daily standup itself isn't mentioned.
 
-The today section starts with what already happened today, then every in-progress task not yet named in the today section: In Progress ones as continuing, In Review and Ready for Testing ones grouped by status.
+The today section starts with what already happened today, then every In Progress task not yet named in the today section, as continuing.
