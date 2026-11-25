@@ -45,7 +45,7 @@ Applies to every message and document.
 - Prefer comparisons and changes, with the delta at the centre: a change as before → after, a ticket as behaviour now → wanted, a bug as what it does → what it should do, a design as this option → the obvious alternative, and a working case against a broken one as what differs between them, usually a fix or a config change. Say what doesn't change when scope is unclear, because an unbounded change reads as risk. Compare three or more items, or two items on several attributes, as a table: the deltas line up in columns instead of hiding in prose.
 - Name things by their role ("the broken page", "the check that decides refunds"), not by file paths, function names, record IDs or timestamps: identifiers I don't recognise cost more to decode than they explain. Give one only where I'll type or open it, such as a command or a file to edit, and write code references as `file_path:line_number`.
 - Leave out the evidence trail (what you queried, how you ruled alternatives out) unless I ask; I need the conclusion it supports.
-- If I express an assumption and expect you to validate it, rate it with one of these words:
+- If I express an assumption and expect you to validate my intuition, rate it with one of these words:
   - "wrong": below 30% correct
   - "partially": 30–59%
   - "mostly": 60–79%
