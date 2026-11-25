@@ -44,6 +44,8 @@ esac
 # --- EXPORTS & PATHS ---
 # fish can't source this file; fish/config.fish repeats these values, keep them in sync.
 export PATH="$HOME/.local/bin:$HOME/.local/npm/bin:$HOME/.cargo/bin:$HOME/.tfenv/bin:$GOPATH/bin:$PATH"
+export EDITOR='nvim'
+export VISUAL='nvim'
 export PAGER='less'
 export LESS='-RF --mouse'
 # difft is git's diff.external, and it can spend minutes on one file (a 530KB
@@ -55,8 +57,8 @@ export KUBECONFIG="$HOME/.kube/config"
 # --- ALIASES ---
 # fish sources only the top-level `alias` lines of this file, so shared aliases
 # must stay one-line `alias name='...'` definitions.
-# fish mirrors this guarded alias in config.fish
-#command -v claude-wrap >/dev/null && alias claude='claude-wrap'
+# fish mirrors this guarded wrapper in config.fish; a function, unlike an alias, also applies after CLAUDE_CONFIG_DIR=
+command -v claude-wrap >/dev/null && claude() { claude-wrap "$@"; }
 alias c2='CLAUDE_CONFIG_DIR="$HOME/.claude2" claude'
 alias claude2='CLAUDE_CONFIG_DIR="$HOME/.claude2" claude'
 alias cc2='CLAUDE_CONFIG_DIR="$HOME/.claude2" claude --continue'
@@ -65,11 +67,12 @@ alias cr2='CLAUDE_CONFIG_DIR="$HOME/.claude2" claude --resume'
 alias c='claude'
 alias cr='claude --resume'
 alias cc='claude --continue'
-alias dc='docker-compose'
+which docker-compose && alias docker-compose='docker compose'
+alias dc='docker compose'
 alias d='docker'
 alias diffthing='diffthing --llm codex --offline'
 alias g='git'
-# alias zsm='zmx-session-manager'
+alias zsm='zmx-session-manager'
 alias k='kubectl'
 alias ks='kubectl'
 alias tf='terraform'
@@ -184,7 +187,10 @@ build_prompt() {
 # keyboard protocol on. Mouse moves and keys then reach bash as escape codes it doesn't
 # know, so it prints "M35;57;52M..." and rings the bell. Popping 99 keyboard levels
 # empties kitty's stack, which resets the flags however many levels the TUI pushed.
-INPUT_MODES_OFF='\e[?1000l\e[?1002l\e[?1003l\e[?1006l\e[<99u'
+# Also reset clipboard paste-event mode (5522), which claude-wrap enables. If a
+# wrapper is interrupted before cleanup, subsequent apps otherwise receive OSC
+# clipboard packets instead of ordinary pasted text.
+INPUT_MODES_OFF='\e[?1000l\e[?1002l\e[?1003l\e[?1006l\e[<99u\e[?5522l'
 
 PROMPT_COMMAND='build_prompt; printf "$INPUT_MODES_OFF"'
 

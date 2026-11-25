@@ -1,13 +1,7 @@
 ---
 name: explain-diff-html
-description: >-
-  Produce a rich, interactive, self-contained HTML explanation of a diff,
-  branch, or pull request, with Background, Intuition, Code walkthrough, and a
-  Quiz, written as one dated file to a code-explanations folder in the user's
-  home directory, outside the repo.
-  Triggers on "explain this diff", "walk me through this branch", "explain PR
-  1234". Not for reviewing changes and not for explaining a standalone issue
-  ticket.
+description: Produce a rich, interactive, self-contained HTML explanation of a diff, branch, or pull request, with Background, Intuition, Code walkthrough, and a   Quiz, written as one dated file to a code-explanations folder in the user's   home directory, outside the repo.   Triggers on "explain this diff", "walk me through this branch", "explain PR   1234". Not for reviewing changes and not for explaining a standalone issue   ticket.
+disable-model-invocation: true
 ---
 
 # Explain Diff (HTML)
@@ -511,7 +505,11 @@ Wrap the anchor around the reference rather than inside it, so the code styling
 still applies:
 
 ```html
-<a class="srcref" href="https://github.com/owner/repo/blob/7abcdfbb09d4d276f06f694dce068d6db3669cbd/src/parser.rs#L88"><code>src/parser.rs:88</code></a>
+<a
+  class="srcref"
+  href="https://github.com/owner/repo/blob/7abcdfbb09d4d276f06f694dce068d6db3669cbd/src/parser.rs#L88"
+  ><code>src/parser.rs:88</code></a
+>
 ```
 
 Link both places a reference appears: the `<code>` spans in prose, and the
@@ -670,4 +668,3 @@ Each finished page carries its own copy of that scaffold, because the output mus
 be self-contained. So a change to the template does not reach pages already
 written. When you change the template, decide whether the existing pages need
 the same edit, and say so.
-

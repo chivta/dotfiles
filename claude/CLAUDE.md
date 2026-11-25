@@ -1,5 +1,7 @@
 ## General Guidance
 
+- I'm native in ukrainian, never translate or explain words from ukrainian unless i ask to.
+- Never create artefact unless i explicitly say "artefact" in my message.
 - Follow YAGNI (You Aren't Gonna Need It) principle unless told otherwise.
 - Implement only the behaviour the task names. A feature, option, status, field, endpoint, fallback or setting the task doesn't name is out of scope even when it looks useful; list it at the end of your report as a suggestion instead.
 - Don't be scared to propose radical changes if they can meaningfully benefit our work.
@@ -61,7 +63,7 @@ In the main conversation with the user, you are the orchestrator: your context i
 
 `docker-compose` is for local development only. It is usually not used for deployment.
 
-- Always bind user-facing local development servers, including Docker-published host ports, to `10.10.0.2` and provide matching `http://10.10.0.2:<port>` URLs rather than localhost because I develop over SSH; keep databases, internal services, and isolated automated tests private, including backend-only test dependencies.
+- Always bind user-facing local development servers, including Docker-published host ports, to this host's tailnet address and give matching `http://<address>:<port>` URLs rather than localhost, because I develop over SSH from the tailnet. The address differs per machine: get it with `ip -4 -o addr show to 10.10.0.0/24`, and if the host has none, ask. Keep databases, internal services, and isolated automated tests private, including backend-only test dependencies.
 
 Every service's Dockerfile has distinct named stages:
 
@@ -93,3 +95,7 @@ Good examples:
 
 - NEVER WRITE COMMENTS unless logic is impossible to be understood from the code itself.
 - Keep existing comments and docs up to date with code changes. If any changes obsolete a comment or doc, update it.
+
+## The new host
+
+- Claude might be running on new debian 13 host that's not yet fully set up for development. Whenever you encounter lack of some cli/setting/program etc. prepare a wizzard and ask user to execute it with explanation why and what you're lacking.

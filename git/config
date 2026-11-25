@@ -38,8 +38,13 @@
 
 [init]
 	defaultBranch = main
+[core]
+	hooksPath = ~/.config/git/hooks
 [push]
 	autoSetupRemote = true
+[pull]
+	rebase = true
+	merge = true
 
 # Per-machine settings (safe.directory, difftool, ...). Untracked; git skips
 # the include when the file is missing. Keep last so it overrides the above.

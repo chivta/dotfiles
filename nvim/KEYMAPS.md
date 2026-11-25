@@ -10,7 +10,7 @@ These keys do something different from what `:Tutor`, vim-be-good or any Vim tut
 
 | Keys | Mode | Stock Vim | This config | Defined in |
 |---|---|---|---|---|
-| `y`, `p` | n, x | use the unnamed register | use the macOS clipboard (`clipboard=unnamedplus`) | `lua/config/options.lua` |
+| `y`, `p` | n, x | use the unnamed register | use the system clipboard (`clipboard=unnamedplus`, OSC 52 over SSH) | `lua/config/options.lua` |
 | `d`, `D`, `c`, `C`, `x`, `s` | n, x | delete and save the text to the register | delete into the black-hole register, clipboard untouched | `lua/config/remap.lua` |
 | `<leader>x{motion}` | n, x | none | cut: delete and copy to clipboard (`<leader>xiw`, visual `<leader>x`) | `lua/config/remap.lua` |
 | `<leader>xx` | n | none | cut line | `lua/config/remap.lua` |

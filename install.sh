@@ -59,6 +59,8 @@ link() {
 for d in $SHARED_CONFIGS; do link "$d" "$HOME/.config/$d"; done
 link bash/.bashrc "$HOME/.bashrc"
 link bash/.bash_profile "$HOME/.bash_profile"
+# hosts.yml next to it holds the auth token, so only the config is linked
+link gh/config.yml "$HOME/.config/gh/config.yml"
 
 # Only these entries are linked, the rest of ~/.claude, ~/.codex and ~/.pi/agent
 # is runtime state the agents write themselves. settings.json stays per-machine.
