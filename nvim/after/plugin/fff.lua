@@ -2,9 +2,10 @@
 -- find files, <leader>ps live grep, <leader>pw grep the word under cursor (or
 -- the visual selection). Inside the picker <C-l> sends the matches (or the
 -- <Tab>-marked ones) to quickfix, since kitty takes <C-q> for zitty's tab history.
+-- <C-b> scrolls the preview up, leaving <C-u> (kitty's Cmd+Backspace) to clear the prompt.
 local fff = require("fff")
 
-fff.setup({ keymaps = { send_to_quickfix = "<C-l>" } })
+fff.setup({ keymaps = { send_to_quickfix = "<C-l>", preview_scroll_up = "<C-b>" } })
 
 vim.keymap.set("n", "<C-p>", fff.find_files, { desc = "Find files" })
 vim.keymap.set("n", "<leader>pf", fff.find_files, { desc = "Find files" })
