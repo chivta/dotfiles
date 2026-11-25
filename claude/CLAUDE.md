@@ -1,7 +1,7 @@
 ## General Guidance
 
 - I'm native in ukrainian, never translate or explain words from ukrainian unless i ask to.
-- Never create artefact unless i explicitly say "artefact" in my message.
+- Never create artifact unless i explicitly say "artefact" in my message.
 - Follow YAGNI (You Aren't Gonna Need It) principle unless told otherwise.
 - Implement only the behaviour the task names. A feature, option, status, field, endpoint, fallback or setting the task doesn't name is out of scope even when it looks useful; list it at the end of your report as a suggestion instead.
 - Don't be scared to propose radical changes if they can meaningfully benefit our work.
